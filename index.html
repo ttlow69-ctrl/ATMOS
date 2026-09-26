@@ -24,11 +24,11 @@
 <style>
 :root{
   --text:#fff;
-  --muted:rgba(255,255,255,.68);
-  --faint:rgba(255,255,255,.42);
-  --glass:rgba(255,255,255,.115);
-  --glass-strong:rgba(255,255,255,.17);
-  --stroke:rgba(255,255,255,.18);
+  --muted:rgba(255,255,255,.82);
+  --faint:rgba(255,255,255,.60);
+  --glass:rgba(16,67,107,.24);
+  --glass-strong:rgba(16,67,107,.34);
+  --stroke:rgba(255,255,255,.24);
   --shadow:0 18px 60px rgba(8,36,71,.18);
   --accent:#fff;
   --sky1:#388ff3;
@@ -44,11 +44,11 @@ body{
   background:linear-gradient(160deg,var(--sky1),var(--sky2) 54%,var(--sky3));
   transition:background .7s ease;
 }
-body[data-sky="clear"]{--sky1:#2b82ed;--sky2:#62b8f7;--sky3:#c2e9fb;--glow:rgba(255,224,116,.58)}
-body[data-sky="cloud"]{--sky1:#5c7c9e;--sky2:#8ca8bf;--sky3:#cedde7;--glow:rgba(255,255,255,.22)}
-body[data-sky="rain"]{--sky1:#314c68;--sky2:#5d7b96;--sky3:#9eb3c3;--glow:rgba(161,208,236,.18)}
+body[data-sky="clear"]{--sky1:#176fc9;--sky2:#3797db;--sky3:#72b8df;--glow:rgba(255,224,116,.48)}
+body[data-sky="cloud"]{--sky1:#4e6e8d;--sky2:#718ea7;--sky3:#9db4c6;--glow:rgba(255,255,255,.16)}
+body[data-sky="rain"]{--sky1:#233b52;--sky2:#45647e;--sky3:#7894a8;--glow:rgba(161,208,236,.14)}
 body[data-sky="storm"]{--sky1:#202a3d;--sky2:#48546b;--sky3:#7b879a;--glow:rgba(190,198,255,.12)}
-body[data-sky="snow"]{--sky1:#7399b9;--sky2:#aec8dc;--sky3:#edf6fb;--glow:rgba(255,255,255,.35)}
+body[data-sky="snow"]{--sky1:#6288a8;--sky2:#8faac0;--sky3:#b9cbd9;--glow:rgba(255,255,255,.25)}
 body[data-sky="fog"]{--sky1:#7f8f9c;--sky2:#adb8c1;--sky3:#d9dfe3;--glow:rgba(255,255,255,.28)}
 body[data-sky="night"]{--sky1:#07162f;--sky2:#123967;--sky3:#315f87;--glow:rgba(190,208,255,.14)}
 
@@ -84,7 +84,7 @@ svg{display:block}
   display:flex;flex-direction:column;gap:7px
 }
 .glass{
-  background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.075));
+  background:linear-gradient(145deg,rgba(24,79,119,.32),rgba(18,66,103,.20));
   border:1px solid var(--stroke);
   box-shadow:var(--shadow);
   backdrop-filter:blur(22px) saturate(1.22);
@@ -109,7 +109,7 @@ svg{display:block}
 .chevron{font-size:13px;opacity:.8}
 .iconBtn{
   width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.105);display:grid;place-items:center;cursor:pointer;
+  background:rgba(24,79,119,.26);display:grid;place-items:center;cursor:pointer;
   backdrop-filter:blur(14px)
 }
 .iconBtn:active{transform:scale(.92)}
@@ -129,7 +129,7 @@ svg{display:block}
 @keyframes float{to{transform:translateY(-4px)}}
 .temp{
   font-size:79px;line-height:.88;font-weight:220;letter-spacing:-5px;
-  text-shadow:0 4px 18px rgba(22,67,109,.10)
+  text-shadow:0 4px 20px rgba(9,43,77,.22)
 }
 .condition{font-size:18px;font-weight:710;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:94vw}
 .heroMeta{display:flex;gap:13px;margin-top:5px;font-size:11px;color:var(--muted)}
@@ -141,9 +141,11 @@ svg{display:block}
   flex:0 0 40px;height:40px;border-radius:17px;
   display:grid;grid-template-columns:25px 1fr auto;align-items:center;gap:7px;padding:0 11px
 }
+.insight.glass{background:linear-gradient(145deg,rgba(18,70,108,.34),rgba(18,70,108,.22))}
+
 .aiDot{
   width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
-  background:rgba(255,255,255,.18);font-size:9px;font-weight:900
+  background:rgba(255,255,255,.22);font-size:9px;font-weight:900
 }
 .insightText{min-width:0;font-size:10px;font-weight:680;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .insightTag{font-size:7px;font-weight:850;padding:4px 6px;border-radius:999px;background:rgba(255,255,255,.13);white-space:nowrap}
@@ -152,6 +154,13 @@ svg{display:block}
 .workspace{
   flex:1;min-height:0;overflow:hidden;border-radius:27px;padding:8px
 }
+.workspace.glass{
+  background:linear-gradient(145deg,rgba(19,72,111,.28),rgba(14,58,93,.20));
+}
+.sectionTitle,.briefMain,.metricV,.dayName,.modelName,.modelMain,.compareTitle{
+  text-shadow:0 1px 2px rgba(5,35,63,.16);
+}
+
 .view{width:100%;height:100%;display:none;overflow:hidden;animation:viewIn .24s ease}
 .view.active{display:block}
 @keyframes viewIn{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}
@@ -164,7 +173,7 @@ svg{display:block}
 .sectionTitle{font-size:11px;font-weight:780}
 .sectionSub{font-size:7.5px;color:var(--muted)}
 .homeChart{
-  border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  border-radius:20px;background:rgba(20,72,111,.24);border:1px solid rgba(255,255,255,.16);
   padding:7px 8px;position:relative
 }
 .chartLegend{
@@ -178,7 +187,7 @@ canvas{display:block;width:100%;height:100%}
   min-height:0;display:grid;grid-template-columns:1.1fr .9fr;gap:6px
 }
 .brief{
-  min-height:0;border-radius:19px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  min-height:0;border-radius:19px;background:rgba(20,72,111,.24);border:1px solid rgba(255,255,255,.16);
   padding:10px;display:flex;flex-direction:column;justify-content:space-between
 }
 .briefLabel{font-size:7px;color:var(--muted);font-weight:850;letter-spacing:.08em;text-transform:uppercase}
@@ -188,7 +197,7 @@ canvas{display:block;width:100%;height:100%}
   min-height:0;display:grid;grid-template-rows:repeat(3,1fr);gap:5px
 }
 .metric{
-  min-height:0;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  min-height:0;border-radius:16px;background:rgba(20,72,111,.24);border:1px solid rgba(255,255,255,.16);
   display:grid;grid-template-columns:1fr auto;align-items:center;padding:0 9px
 }
 .metricK{font-size:7px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
@@ -207,14 +216,14 @@ canvas{display:block;width:100%;height:100%}
 }
 .rangeBtn.active{background:rgba(255,255,255,.19);color:#fff}
 .bigChart{
-  border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  border-radius:20px;background:rgba(20,72,111,.24);border:1px solid rgba(255,255,255,.16);
   padding:9px
 }
 .hourCards{
   min-height:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:5px
 }
 .hourCard{
-  min-height:0;border-radius:17px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  min-height:0;border-radius:17px;background:rgba(20,72,111,.24);border:1px solid rgba(255,255,255,.16);
   display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer
 }
 .hourCard:active,.dayRow:active,.modelRow:active{background:rgba(255,255,255,.13)}
@@ -249,7 +258,7 @@ canvas{display:block;width:100%;height:100%}
   height:100%;display:grid;grid-template-rows:91px 34px 1fr;gap:6px
 }
 .compareHero{
-  border-radius:20px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.10);
+  border-radius:20px;background:rgba(20,72,111,.25);border:1px solid rgba(255,255,255,.16);
   padding:10px;display:grid;grid-template-columns:74px 1fr;align-items:center
 }
 .scoreRing{
@@ -269,7 +278,7 @@ canvas{display:block;width:100%;height:100%}
 .compareTab.active{background:rgba(255,255,255,.20);color:#fff}
 .modelList{min-height:0;display:grid;grid-template-rows:repeat(4,1fr);gap:5px}
 .modelRow{
-  min-height:0;border-radius:17px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  min-height:0;border-radius:17px;background:rgba(20,72,111,.24);border:1px solid rgba(255,255,255,.16);
   display:grid;grid-template-columns:1fr 35px 1fr;align-items:center;padding:7px 9px
 }
 .modelName{font-size:9px;font-weight:850}
@@ -936,23 +945,23 @@ function renderHomeChart(){
     let min=Math.min(...temps),max=Math.max(...temps);if(max-min<3){min-=1.5;max+=1.5}
     const p={l:16,r:7,t:28,b:19},gw=w-p.l-p.r,gh=h-p.t-p.b,bottom=h-p.b;
 
-    ctx.strokeStyle="rgba(255,255,255,.10)";ctx.lineWidth=1;
+    ctx.strokeStyle="rgba(255,255,255,.16)";ctx.lineWidth=1;
     for(let j=0;j<3;j++){const y=p.t+gh*j/2;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke()}
 
     probs.forEach((v,j)=>{
       if(v<=0)return;const x=p.l+j/(ids.length-1)*gw,bh=v/100*gh*.28;
-      ctx.fillStyle="rgba(198,238,255,.35)";ctx.fillRect(x-3,bottom-bh,6,bh)
+      ctx.fillStyle="rgba(210,242,255,.50)";ctx.fillRect(x-3,bottom-bh,6,bh)
     });
 
     const pts=temps.map((v,j)=>({x:p.l+j/(temps.length-1)*gw,y:bottom-(v-min)/(max-min)*gh}));
     drawCurve(ctx,pts,"rgba(255,255,255,.96)",2.2);
 
-    ctx.fillStyle="rgba(255,255,255,.72)";ctx.font="7px -apple-system,Arial";ctx.textAlign="center";
+    ctx.fillStyle="rgba(255,255,255,.90)";ctx.font="7px -apple-system,Arial";ctx.textAlign="center";
     ids.forEach((id,j)=>{
       const x=p.l+j/(ids.length-1)*gw;
       ctx.fillText(j===0?"ora":hh(forecast.hourly.time[id]),x,h-5);
       ctx.fillStyle="#fff";ctx.font="700 8px -apple-system,Arial";ctx.fillText(round(temps[j])+"°",x,pts[j].y-7);
-      ctx.fillStyle="rgba(255,255,255,.72)";ctx.font="7px -apple-system,Arial"
+      ctx.fillStyle="rgba(255,255,255,.90)";ctx.font="7px -apple-system,Arial"
     })
   })
 }
@@ -984,7 +993,7 @@ function drawHoursChart(){
   let min=Math.min(...temps,...feels),max=Math.max(...temps,...feels);if(max-min<3){min-=1.5;max+=1.5}
   const p={l:18,r:8,t:12,b:23},gw=w-p.l-p.r,gh=h-p.t-p.b,bottom=h-p.b;
 
-  ctx.strokeStyle="rgba(255,255,255,.09)";
+  ctx.strokeStyle="rgba(255,255,255,.15)";
   for(let j=0;j<4;j++){const y=p.t+gh*j/3;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke()}
 
   probs.forEach((v,j)=>{
@@ -994,10 +1003,10 @@ function drawHoursChart(){
 
   const points=temps.map((v,j)=>({x:p.l+j/(temps.length-1)*gw,y:bottom-(v-min)/(max-min)*gh}));
   const feelPoints=feels.map((v,j)=>({x:p.l+j/(feels.length-1)*gw,y:bottom-(v-min)/(max-min)*gh}));
-  drawCurve(ctx,feelPoints,"rgba(255,255,255,.30)",1.5);
+  drawCurve(ctx,feelPoints,"rgba(255,255,255,.48)",1.5);
   drawCurve(ctx,points,"#fff",2.4);
 
-  ctx.fillStyle="rgba(255,255,255,.68)";ctx.font="7px -apple-system,Arial";ctx.textAlign="center";
+  ctx.fillStyle="rgba(255,255,255,.88)";ctx.font="7px -apple-system,Arial";ctx.textAlign="center";
   ids.forEach((id,j)=>{const x=p.l+j/(ids.length-1)*gw;ctx.fillText(hh(forecast.hourly.time[id]),x,h-6)})
 }
 document.querySelectorAll(".rangeBtn").forEach(b=>b.onclick=()=>{
