@@ -1,25 +1,31 @@
 {
   "id": "/",
-  "name": "ATMOS Weather",
+  "name": "ATMOS Weather Intelligence",
   "short_name": "ATMOS",
-  "description": "Meteo intelligente e confronto previsioni per Senago.",
+  "description": "Meteo intelligente, confronto modelli e radar per l'Italia.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0b78e3",
-  "theme_color": "#0b78e3",
+  "background_color": "#087ee8",
+  "theme_color": "#087ee8",
   "lang": "it-IT",
+  "categories": [
+    "weather",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/maskable-512.png",
