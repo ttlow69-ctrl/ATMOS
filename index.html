@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-<title>ATMOS · Map Focus</title>
+<title>ATMOS · Map Focus 11.2</title>
 
 <style>
 :root{
@@ -336,6 +336,19 @@ input[type=range]{width:100%;accent-color:#fff}
 .dataCopy{font-size:6.8px;color:var(--muted);line-height:1.3;margin-top:3px;max-width:270px}
 .dataValue{font-size:16px;font-weight:850;white-space:nowrap}
 .legendBar{height:4px;border-radius:99px;margin-top:7px;background:linear-gradient(90deg,#4ea4ff,#80d9d0,#ffe879,#ff9f5c,#e95d78)}
+.cityValue{
+  min-width:31px;height:24px;padding:0 6px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(28,74,108,.88);
+  color:#fff;font-size:8px;font-weight:850;
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 4px 12px rgba(8,39,66,.18);
+  white-space:nowrap
+}
+.cityCloud{
+  background:rgba(232,244,250,.88);
+  color:#284c65;
+}
 .mapLabel{
   background:rgba(25,70,105,.78)!important;color:white!important;border:1px solid rgba(255,255,255,.14)!important;
   box-shadow:none!important;border-radius:8px!important;padding:2px 4px!important;font-size:7px!important;font-weight:800!important
@@ -492,33 +505,31 @@ body.map-mode .centerBtn{
   box-shadow:0 8px 24px rgba(9,43,75,.16)
 }
 
-/* Dock monoriga: un gesto orizzontale, nessun menu dentro menu. */
+/* Tutti i 7 layer visibili subito: niente scroll orizzontale. */
 body.map-mode .layerDock{
   left:8px;right:52px;top:8px;
   height:36px;
-  display:flex;
-  grid-template-columns:none;
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
   align-items:center;
-  gap:4px;
+  gap:2px;
   padding:3px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scrollbar-width:none;
-  overscroll-behavior-x:contain;
-  -webkit-overflow-scrolling:touch;
+  overflow:visible;
   background:rgba(24,67,101,.72);
   border-radius:15px;
   box-shadow:0 8px 24px rgba(9,43,75,.12)
 }
-body.map-mode .layerDock::-webkit-scrollbar{display:none}
 body.map-mode .layerBtn{
-  flex:0 0 auto;
+  min-width:0;
+  width:100%;
   height:30px;
-  padding:0 11px;
-  border-radius:12px;
-  font-size:7.2px;
-  letter-spacing:.015em;
-  color:rgba(255,255,255,.72)
+  padding:0 2px;
+  border-radius:11px;
+  font-size:6.15px;
+  letter-spacing:0;
+  color:rgba(255,255,255,.72);
+  overflow:hidden;
+  text-overflow:clip
 }
 body.map-mode .layerBtn.active{
   background:rgba(255,255,255,.23);
@@ -750,7 +761,7 @@ body.map-mode .nav{flex-basis:53px;height:53px}
           <button class="layerBtn" data-layer="temp">TEMP</button>
           <button class="layerBtn" data-layer="wind">VENTO</button>
           <button class="layerBtn" data-layer="cloud">NUBI</button>
-          <button class="layerBtn" data-layer="pressure">PRESSIONE</button>
+          <button class="layerBtn" data-layer="pressure">PRES.</button>
           <button class="layerBtn" data-layer="air">ARIA</button>
           <button class="layerBtn" data-layer="sea">MARE</button>
         </div>
@@ -885,9 +896,10 @@ const KEYS={
   forecasts:"atmos_forecasts_v9",
   models:"atmos_models_v9_",
   air:"atmos_air_v11_",
-  atmosGrid:"atmos_grid_v11",
-  airGrid:"atmos_air_grid_v11",
-  marineGrid:"atmos_marine_grid_v11"
+  atmosCities:"atmos_cities_v11_2",
+  pressureGrid:"atmos_pressure_grid_v11_2",
+  airCities:"atmos_air_cities_v11_2",
+  marineGrid:"atmos_marine_grid_v11" 
 };
 
 const MODEL_DEFS=[
@@ -911,7 +923,43 @@ let map=null,mapMarker=null,radarLayer=null,heatLayer=null,dataLayer=null,contou
 let radarFrames=[],radarHost="",radarIndex=0,radarTimer=null,radarReady=false;
 let activeMapLayer="radar";
 let airData=null,airLoading=false;
-let atmosGrid=null,airGrid=null,marineGrid=null;
+let atmosCities=null,pressureGrid=null,airCities=null,marineGrid=null;
+
+/* 
+   TEMP / VENTO / NUBI / ARIA:
+   dati ancorati a località reali, non a una griglia geometrica.
+   La griglia rimane soltanto per le isobare, dove una mesh è necessaria.
+*/
+const CITY_POINTS=[
+  {name:"Aosta",lat:45.7375,lon:7.3201},
+  {name:"Torino",lat:45.0703,lon:7.6869},
+  {name:"Milano",lat:45.4642,lon:9.1900},
+  {name:"Genova",lat:44.4056,lon:8.9463},
+  {name:"Trento",lat:46.0748,lon:11.1217},
+  {name:"Bolzano",lat:46.4983,lon:11.3548},
+  {name:"Verona",lat:45.4384,lon:10.9916},
+  {name:"Venezia",lat:45.4408,lon:12.3155},
+  {name:"Trieste",lat:45.6495,lon:13.7768},
+  {name:"Parma",lat:44.8015,lon:10.3279},
+  {name:"Bologna",lat:44.4949,lon:11.3426},
+  {name:"Firenze",lat:43.7696,lon:11.2558},
+  {name:"Perugia",lat:43.1107,lon:12.3908},
+  {name:"Ancona",lat:43.6158,lon:13.5189},
+  {name:"Roma",lat:41.9028,lon:12.4964},
+  {name:"L'Aquila",lat:42.3498,lon:13.3995},
+  {name:"Pescara",lat:42.4618,lon:14.2161},
+  {name:"Napoli",lat:40.8518,lon:14.2681},
+  {name:"Campobasso",lat:41.5603,lon:14.6627},
+  {name:"Bari",lat:41.1171,lon:16.8719},
+  {name:"Lecce",lat:40.3515,lon:18.1750},
+  {name:"Potenza",lat:40.6401,lon:15.8051},
+  {name:"Catanzaro",lat:38.9098,lon:16.5877},
+  {name:"Reggio Calabria",lat:38.1113,lon:15.6473},
+  {name:"Palermo",lat:38.1157,lon:13.3615},
+  {name:"Catania",lat:37.5079,lon:15.0830},
+  {name:"Sassari",lat:40.7259,lon:8.5557},
+  {name:"Cagliari",lat:39.2238,lon:9.1217}
+];
 
 const GRID_LATS=[36.0,38.25,40.5,42.75,45.0,47.25];
 const GRID_LONS=[7.0,9.4,11.8,14.2,16.6,19.0];
@@ -1549,54 +1597,88 @@ function showRadarPanel(show){
   $("radarPanel").style.display=show?"block":"none";
   $("dataPanel").classList.toggle("show",!show)
 }
-function gridURL(){
+function buildForecastURL(points,currentFields){
   const p=new URLSearchParams({
-    latitude:GRID_POINTS.map(p=>p.lat).join(","),
-    longitude:GRID_POINTS.map(p=>p.lon).join(","),
+    latitude:points.map(p=>p.lat).join(","),
+    longitude:points.map(p=>p.lon).join(","),
     timezone:"GMT",
-    current:"temperature_2m,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m"
+    current:currentFields
   });
   return "https://api.open-meteo.com/v1/forecast?"+p
 }
-async function ensureAtmosGrid(){
-  if(atmosGrid)return atmosGrid;
-  const cache=loadJSON(KEYS.atmosGrid,null);
-  if(cache&&Date.now()-cache.at<20*60*1000){atmosGrid=cache.data;return atmosGrid}
-  const res=await fetch(gridURL(),{cache:"no-store"});
-  if(!res.ok)throw new Error("grid "+res.status);
-  let raw=await res.json();if(!Array.isArray(raw))raw=[raw];
-  atmosGrid=raw.map((x,i)=>({
-    ...GRID_POINTS[i],
-    temp:Number(x.current?.temperature_2m),
-    cloud:Number(x.current?.cloud_cover),
-    pressure:Number(x.current?.surface_pressure),
-    wind:Number(x.current?.wind_speed_10m),
-    windDir:Number(x.current?.wind_direction_10m)
-  })).filter(x=>Number.isFinite(x.temp));
-  saveJSON(KEYS.atmosGrid,{at:Date.now(),data:atmosGrid});
-  return atmosGrid
-}
-async function ensureAirGrid(){
-  if(airGrid)return airGrid;
-  const cache=loadJSON(KEYS.airGrid,null);
-  if(cache&&Date.now()-cache.at<60*60*1000){airGrid=cache.data;return airGrid}
+function buildAirURL(points){
   const p=new URLSearchParams({
-    latitude:GRID_POINTS.map(p=>p.lat).join(","),
-    longitude:GRID_POINTS.map(p=>p.lon).join(","),
+    latitude:points.map(p=>p.lat).join(","),
+    longitude:points.map(p=>p.lon).join(","),
     timezone:"GMT",
     current:"european_aqi,pm2_5,pm10"
   });
-  const res=await fetch("https://air-quality-api.open-meteo.com/v1/air-quality?"+p,{cache:"no-store"});
-  if(!res.ok)throw new Error("air grid "+res.status);
+  return "https://air-quality-api.open-meteo.com/v1/air-quality?"+p
+}
+async function ensureAtmosCities(){
+  if(atmosCities)return atmosCities;
+  const cache=loadJSON(KEYS.atmosCities,null);
+  if(cache&&Date.now()-cache.at<20*60*1000){atmosCities=cache.data;return atmosCities}
+
+  const res=await fetch(
+    buildForecastURL(
+      CITY_POINTS,
+      "temperature_2m,cloud_cover,wind_speed_10m,wind_direction_10m"
+    ),
+    {cache:"no-store"}
+  );
+  if(!res.ok)throw new Error("cities "+res.status);
+
   let raw=await res.json();if(!Array.isArray(raw))raw=[raw];
-  airGrid=raw.map((x,i)=>({
+  atmosCities=raw.map((x,i)=>({
+    ...CITY_POINTS[i],
+    temp:Number(x.current?.temperature_2m),
+    cloud:Number(x.current?.cloud_cover),
+    wind:Number(x.current?.wind_speed_10m),
+    windDir:Number(x.current?.wind_direction_10m)
+  })).filter(x=>Number.isFinite(x.temp));
+
+  saveJSON(KEYS.atmosCities,{at:Date.now(),data:atmosCities});
+  return atmosCities
+}
+async function ensurePressureGrid(){
+  if(pressureGrid)return pressureGrid;
+  const cache=loadJSON(KEYS.pressureGrid,null);
+  if(cache&&Date.now()-cache.at<20*60*1000){pressureGrid=cache.data;return pressureGrid}
+
+  const res=await fetch(
+    buildForecastURL(GRID_POINTS,"pressure_msl"),
+    {cache:"no-store"}
+  );
+  if(!res.ok)throw new Error("pressure grid "+res.status);
+
+  let raw=await res.json();if(!Array.isArray(raw))raw=[raw];
+  pressureGrid=raw.map((x,i)=>({
     ...GRID_POINTS[i],
+    pressure:Number(x.current?.pressure_msl)
+  })).filter(x=>Number.isFinite(x.pressure));
+
+  saveJSON(KEYS.pressureGrid,{at:Date.now(),data:pressureGrid});
+  return pressureGrid
+}
+async function ensureAirCities(){
+  if(airCities)return airCities;
+  const cache=loadJSON(KEYS.airCities,null);
+  if(cache&&Date.now()-cache.at<60*60*1000){airCities=cache.data;return airCities}
+
+  const res=await fetch(buildAirURL(CITY_POINTS),{cache:"no-store"});
+  if(!res.ok)throw new Error("air cities "+res.status);
+
+  let raw=await res.json();if(!Array.isArray(raw))raw=[raw];
+  airCities=raw.map((x,i)=>({
+    ...CITY_POINTS[i],
     aqi:Number(x.current?.european_aqi),
     pm25:Number(x.current?.pm2_5),
     pm10:Number(x.current?.pm10)
   })).filter(x=>Number.isFinite(x.aqi));
-  saveJSON(KEYS.airGrid,{at:Date.now(),data:airGrid});
-  return airGrid
+
+  saveJSON(KEYS.airCities,{at:Date.now(),data:airCities});
+  return airCities
 }
 async function ensureMarineGrid(){
   if(marineGrid)return marineGrid;
@@ -1623,9 +1705,15 @@ async function ensureMarineGrid(){
   saveJSON(KEYS.marineGrid,{at:Date.now(),data:marineGrid});
   return marineGrid
 }
-function tooltipMarker(lat,lon,text){
-  L.circleMarker([lat,lon],{radius:1,opacity:0,fillOpacity:0})
-    .bindTooltip(text,{permanent:true,direction:"center",className:"mapLabel"})
+function cityValueMarker(x,text,extra="",cloud=false){
+  const icon=L.divIcon({
+    className:"",
+    html:`<div class="cityValue ${cloud?"cityCloud":""}">${text}</div>`,
+    iconSize:[42,24],
+    iconAnchor:[21,12]
+  });
+  L.marker([x.lat,x.lon],{icon,interactive:true})
+    .bindTooltip(`${x.name}${extra?` · ${extra}`:""}`,{direction:"top"})
     .addTo(dataLayer)
 }
 function drawTemperature(data){
@@ -1636,8 +1724,8 @@ function drawTemperature(data){
       gradient:{0:"#4b8dff",.35:"#64d6e4",.58:"#f6e77b",.78:"#ff9f5b",1:"#ee5d75"}
     }).addTo(map)
   }
-  data.forEach((x,i)=>{if(i%2===0)tooltipMarker(x.lat,x.lon,`${round(x.temp)}°`)});
-  setPanel("Temperatura","Campo attuale campionato sull'Italia con dati Open-Meteo.",`${round(min)}° → ${round(max)}°`,
+  data.forEach(x=>cityValueMarker(x,`${round(x.temp)}°`,x.name));
+  setPanel("Temperatura","Valori attuali ancorati a città reali; colore = campo interpolato.",`${round(min)}° → ${round(max)}°`,
     "linear-gradient(90deg,#4b8dff,#64d6e4,#f6e77b,#ff9f5b,#ee5d75)")
 }
 function drawClouds(data){
@@ -1648,19 +1736,18 @@ function drawClouds(data){
     }).addTo(map)
   }
   const avg=data.reduce((s,x)=>s+x.cloud,0)/data.length;
-  data.forEach((x,i)=>{if(i%3===0)tooltipMarker(x.lat,x.lon,`${round(x.cloud)}%`)});
-  setPanel("Nuvolosità","Copertura nuvolosa attuale. Più chiaro = cielo più coperto.",`${round(avg)}% media`,
+  data.forEach(x=>cityValueMarker(x,`${round(x.cloud)}%`,x.name,true));
+  setPanel("Nuvolosità","Copertura attuale ancorata a città reali; più chiaro = più coperto.",`${round(avg)}% media`,
     "linear-gradient(90deg,rgba(95,173,230,.28),#9cc9e4,#dceaf2,#fff)")
 }
 function drawWind(data){
-  data.forEach((x,i)=>{
-    if(i%2!==0)return;
+  data.forEach(x=>{
     const icon=L.divIcon({
       className:"",
       html:`<div class="wind-marker"><div class="wind-arrow" style="transform:rotate(${x.windDir}deg)">↑</div><div class="wind-speed">${round(x.wind)} km/h</div></div>`,
       iconSize:[34,34],iconAnchor:[17,17]
     });
-    L.marker([x.lat,x.lon],{icon,interactive:true}).bindTooltip(`${round(x.wind)} km/h · ${compass(x.windDir)}`).addTo(dataLayer)
+    L.marker([x.lat,x.lon],{icon,interactive:true}).bindTooltip(`${x.name} · ${round(x.wind)} km/h · ${compass(x.windDir)}`).addTo(dataLayer)
   });
   const max=Math.max(...data.map(x=>x.wind));
   setPanel("Vento","Frecce = provenienza/direzione modellistica; valore = velocità a 10 m.",`max ${round(max)} km/h`,
@@ -1721,11 +1808,11 @@ function drawAir(data){
     L.circleMarker([x.lat,x.lon],{
       radius:9,color:"rgba(255,255,255,.55)",weight:1,
       fillColor:aqiColor(x.aqi),fillOpacity:.78
-    }).bindTooltip(`AQI ${round(x.aqi)} · PM2.5 ${x.pm25.toFixed(0)}`).addTo(dataLayer)
+    }).bindTooltip(`${x.name} · AQI ${round(x.aqi)} · PM2.5 ${x.pm25.toFixed(0)}`).addTo(dataLayer)
   });
   const nearest=airData?.current?.european_aqi;
   const avg=data.reduce((s,x)=>s+x.aqi,0)/data.length;
-  setPanel("Qualità dell'aria","Indice europeo CAMS. Tocca i punti per AQI e PM2.5.",Number.isFinite(Number(nearest))?`qui ${round(nearest)}`:`media ${round(avg)}`,
+  setPanel("Qualità dell'aria","AQI europeo CAMS su città reali. Tocca i punti per AQI e PM2.5.",Number.isFinite(Number(nearest))?`qui ${round(nearest)}`:`media ${round(avg)}`,
     "linear-gradient(90deg,#56d8a0,#95df7a,#f1dc64,#f2a45d,#e67367,#a66cbe)")
 }
 function waveColor(v){
@@ -1762,7 +1849,6 @@ async function setMapLayer(kind){
   document.querySelectorAll(".layerBtn").forEach(b=>{
     const active=b.dataset.layer===kind;
     b.classList.toggle("active",active);
-    if(active&&currentView==="map")setTimeout(()=>b.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"}),20);
   });
   clearMapWeather();
   centerMap();
@@ -1778,15 +1864,16 @@ async function setMapLayer(kind){
   setPanel(titles[kind],"Caricamento dati…","");
 
   try{
-    if(kind==="temp"||kind==="wind"||kind==="cloud"||kind==="pressure"){
-      const data=await ensureAtmosGrid();
+    if(kind==="temp"||kind==="wind"||kind==="cloud"){
+      const data=await ensureAtmosCities();
       if(kind==="temp")drawTemperature(data);
       if(kind==="wind")drawWind(data);
       if(kind==="cloud")drawClouds(data);
-      if(kind==="pressure")drawPressure(data);
+    }else if(kind==="pressure"){
+      drawPressure(await ensurePressureGrid());
     }else if(kind==="air"){
       await loadAirCurrent();
-      drawAir(await ensureAirGrid())
+      drawAir(await ensureAirCities())
     }else if(kind==="sea"){
       drawSea(await ensureMarineGrid())
     }
