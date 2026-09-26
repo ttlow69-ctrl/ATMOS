@@ -134,7 +134,7 @@ svg{display:block}
 .condition{font-size:18px;font-weight:710;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:94vw}
 .heroMeta{display:flex;gap:13px;margin-top:5px;font-size:11px;color:var(--muted)}
 .heroMeta b{color:#fff;font-weight:760}
-.updated{font-size:7.5px;color:var(--faint);margin-top:4px}
+.updated{font-size:7.5px;color:var(--faint);margin-top:4px}.updated a{color:inherit;text-decoration:none}
 
 /* ---------- insight ---------- */
 .insight{
@@ -290,24 +290,35 @@ canvas{display:block;width:100%;height:100%}
 /* map */
 .mapWrap{height:100%;position:relative;border-radius:21px;overflow:hidden}
 #map{position:absolute;inset:0;background:#9ec7db}
-.leaflet-tile-pane{filter:saturate(.75) brightness(.84) contrast(1.02)}
-.leaflet-control-attribution{font-size:7px!important;background:rgba(18,43,63,.72)!important;color:rgba(255,255,255,.7)!important}
+.leaflet-tile-pane{filter:saturate(.73) brightness(.82) contrast(1.03)}
+.leaflet-control-attribution{font-size:7px!important;background:rgba(18,43,63,.78)!important;color:rgba(255,255,255,.72)!important}
 .leaflet-control-attribution a{color:#fff!important}
 .mapHeader{
-  position:absolute;z-index:600;left:8px;right:8px;top:8px;display:flex;justify-content:space-between;align-items:center;pointer-events:none
+  position:absolute;z-index:650;left:8px;right:8px;top:8px;display:flex;justify-content:space-between;align-items:center;pointer-events:none
 }
 .mapPill{
-  pointer-events:auto;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 9px;
-  background:rgba(34,74,104,.67);backdrop-filter:blur(16px);font-size:7.5px;font-weight:850
+  pointer-events:auto;border:1px solid rgba(255,255,255,.20);border-radius:999px;padding:7px 9px;
+  background:rgba(26,70,105,.76);backdrop-filter:blur(16px);font-size:7.5px;font-weight:850
 }
 .centerBtn{
-  pointer-events:auto;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
-  background:rgba(34,74,104,.67);backdrop-filter:blur(16px);display:grid;place-items:center;cursor:pointer
+  pointer-events:auto;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.20);
+  background:rgba(26,70,105,.76);backdrop-filter:blur(16px);display:grid;place-items:center;cursor:pointer
 }
-.radar{
-  position:absolute;z-index:600;left:8px;right:8px;bottom:8px;
+.layerDock{
+  position:absolute;z-index:650;left:8px;right:8px;top:49px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  padding:5px;border-radius:15px;background:rgba(26,70,105,.72);
+  border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(17px)
+}
+.layerBtn{
+  height:27px;border:0;border-radius:10px;background:transparent;color:rgba(255,255,255,.68);
+  font-size:6.7px;font-weight:850;letter-spacing:.01em;cursor:pointer;white-space:nowrap
+}
+.layerBtn.active{background:rgba(255,255,255,.20);color:#fff}
+.radar,.dataPanel{
+  position:absolute;z-index:650;left:8px;right:8px;bottom:8px;
   border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:8px;
-  background:rgba(34,74,104,.76);backdrop-filter:blur(18px)
+  background:rgba(26,70,105,.80);backdrop-filter:blur(18px)
 }
 .radarMain{display:grid;grid-template-columns:31px 1fr 44px;gap:7px;align-items:center}
 .playBtn{
@@ -318,6 +329,35 @@ input[type=range]{width:100%;accent-color:#fff}
 .radarTime{text-align:right;font-size:8px;font-weight:850}
 .radarFoot{display:flex;justify-content:space-between;margin-top:4px;font-size:6.2px;color:var(--muted)}
 .radarFoot a{color:#fff}
+.dataPanel{display:none;min-height:58px}
+.dataPanel.show{display:block}
+.dataTop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.dataTitle{font-size:10px;font-weight:850}
+.dataCopy{font-size:6.8px;color:var(--muted);line-height:1.3;margin-top:3px;max-width:270px}
+.dataValue{font-size:16px;font-weight:850;white-space:nowrap}
+.legendBar{height:4px;border-radius:99px;margin-top:7px;background:linear-gradient(90deg,#4ea4ff,#80d9d0,#ffe879,#ff9f5c,#e95d78)}
+.mapLabel{
+  background:rgba(25,70,105,.78)!important;color:white!important;border:1px solid rgba(255,255,255,.14)!important;
+  box-shadow:none!important;border-radius:8px!important;padding:2px 4px!important;font-size:7px!important;font-weight:800!important
+}
+.mapLabel::before{display:none!important}
+.wind-marker{
+  width:34px;height:34px;border-radius:50%;background:rgba(25,70,105,.72);border:1px solid rgba(255,255,255,.16);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(8px)
+}
+.wind-arrow{font-size:15px;line-height:12px;transform-origin:center center}
+.wind-speed{font-size:6px;font-weight:850;margin-top:3px}
+.pressure-center{
+  min-width:31px;height:31px;padding:0 4px;border-radius:50%;background:rgba(25,70,105,.80);border:1px solid rgba(255,255,255,.22);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;color:white
+}
+.pressure-letter{font-size:13px;font-weight:950;line-height:11px}
+.pressure-val{font-size:5.5px;font-weight:800}
+.wave-marker{
+  min-width:34px;height:34px;border-radius:50%;background:rgba(25,70,105,.78);border:1px solid rgba(255,255,255,.18);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff
+}
+.wave-main{font-size:8px;font-weight:900}.wave-dir{font-size:9px;line-height:8px}
 
 /* nav */
 .nav{
@@ -496,7 +536,7 @@ input[type=range]{width:100%;accent-color:#fff}
           <div class="metrics">
             <div class="metric"><div class="metricK">Pioggia</div><div class="metricV" id="rainMetric">--</div></div>
             <div class="metric"><div class="metricK">Vento</div><div class="metricV" id="windMetric">--</div></div>
-            <div class="metric"><div class="metricK">Tramonto</div><div class="metricV" id="sunsetMetric">--</div></div>
+            <div class="metric" id="airMetricCard"><div class="metricK">Aria</div><div class="metricV" id="airMetric">--</div></div>
           </div>
         </div>
       </div>
@@ -559,7 +599,7 @@ input[type=range]{width:100%;accent-color:#fff}
         <div id="map"></div>
 
         <div class="mapHeader">
-          <div class="mapPill">RADAR · OSSERVATO</div>
+          <div class="mapPill" id="mapModeTitle">RADAR · OSSERVATO</div>
           <button class="centerBtn" id="centerMapBtn">
             <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8">
               <circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
@@ -567,7 +607,17 @@ input[type=range]{width:100%;accent-color:#fff}
           </button>
         </div>
 
-        <div class="radar">
+        <div class="layerDock">
+          <button class="layerBtn active" data-layer="radar">RADAR</button>
+          <button class="layerBtn" data-layer="temp">TEMP</button>
+          <button class="layerBtn" data-layer="wind">VENTO</button>
+          <button class="layerBtn" data-layer="cloud">NUBI</button>
+          <button class="layerBtn" data-layer="pressure">PRESSIONE</button>
+          <button class="layerBtn" data-layer="air">ARIA</button>
+          <button class="layerBtn" data-layer="sea">MARE</button>
+        </div>
+
+        <div class="radar" id="radarPanel">
           <div class="radarMain">
             <button class="playBtn" id="radarPlay">▶</button>
             <input id="radarSlider" type="range" min="0" max="0" value="0" step="1">
@@ -577,6 +627,17 @@ input[type=range]{width:100%;accent-color:#fff}
             <span id="radarStatus">Caricamento radar…</span>
             <span>Fonte <a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a></span>
           </div>
+        </div>
+
+        <div class="dataPanel" id="dataPanel">
+          <div class="dataTop">
+            <div>
+              <div class="dataTitle" id="dataTitle">Dati meteo</div>
+              <div class="dataCopy" id="dataCopy">Caricamento…</div>
+            </div>
+            <div class="dataValue" id="dataValue"></div>
+          </div>
+          <div class="legendBar" id="legendBar"></div>
         </div>
       </div>
     </div>
@@ -666,6 +727,7 @@ input[type=range]{width:100%;accent-color:#fff}
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 <script>
 const DEFAULT_PLACE={
   id:"senago",
@@ -683,7 +745,11 @@ const KEYS={
   favorites:"atmos_favorites_v9",
   recents:"atmos_recents_v9",
   forecasts:"atmos_forecasts_v9",
-  models:"atmos_models_v9_"
+  models:"atmos_models_v9_",
+  air:"atmos_air_v11_",
+  atmosGrid:"atmos_grid_v11",
+  airGrid:"atmos_air_grid_v11",
+  marineGrid:"atmos_marine_grid_v11"
 };
 
 const MODEL_DEFS=[
@@ -703,8 +769,30 @@ let models=[];
 let modelsLoading=false;
 let mainLoading=false;
 
-let map=null,mapMarker=null,radarLayer=null;
+let map=null,mapMarker=null,radarLayer=null,heatLayer=null,dataLayer=null,contourLayer=null;
 let radarFrames=[],radarHost="",radarIndex=0,radarTimer=null,radarReady=false;
+let activeMapLayer="radar";
+let airData=null,airLoading=false;
+let atmosGrid=null,airGrid=null,marineGrid=null;
+
+const GRID_LATS=[36.0,38.25,40.5,42.75,45.0,47.25];
+const GRID_LONS=[7.0,9.4,11.8,14.2,16.6,19.0];
+const GRID_POINTS=GRID_LATS.flatMap(lat=>GRID_LONS.map(lon=>({lat,lon})));
+
+const SEA_POINTS=[
+  {name:"Mar Ligure",lat:43.6,lon:9.2},
+  {name:"Alto Tirreno",lat:42.5,lon:10.7},
+  {name:"Tirreno centrale",lat:40.8,lon:12.0},
+  {name:"Tirreno sud",lat:38.8,lon:13.2},
+  {name:"Canale di Sardegna",lat:38.5,lon:9.2},
+  {name:"Mare di Sardegna",lat:40.3,lon:7.8},
+  {name:"Stretto di Sicilia",lat:36.9,lon:12.2},
+  {name:"Ionio",lat:37.6,lon:16.7},
+  {name:"Golfo di Taranto",lat:39.8,lon:17.0},
+  {name:"Basso Adriatico",lat:41.4,lon:18.2},
+  {name:"Adriatico centrale",lat:43.0,lon:15.0},
+  {name:"Alto Adriatico",lat:44.8,lon:13.2}
+];
 
 const $=id=>document.getElementById(id);
 const get=(a,i,f=0)=>a?.[i] ?? f;
@@ -899,13 +987,13 @@ function renderForecast(){
   $("maxTemp").textContent=round(get(forecast.daily.temperature_2m_max,0))+"°";
   $("minTemp").textContent=round(get(forecast.daily.temperature_2m_min,0))+"°";
   $("feels").textContent=round(c.apparent_temperature)+"°";
-  $("updated").textContent="Aggiornato alle "+hh(c.time);
+  $("updated").innerHTML=`Aggiornato alle ${hh(c.time)} · <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>`;
 
   const s=summary();
   $("insightText").textContent=s.main;
   $("insightTag").textContent=rainEvent()?"DA VEDERE":"STABILE";
   $("briefMain").textContent=s.main;
-  $("briefSub").textContent=s.sub;
+  $("briefSub").textContent=s.sub+` · Tramonto ${hh(forecast.daily.sunset[0])}`;
 
   const bw=bestWindow();
   if(bw){
@@ -914,13 +1002,71 @@ function renderForecast(){
   }
   $("rainMetric").textContent=round(get(forecast.hourly.precipitation_probability,currentHour))+"%";
   $("windMetric").textContent=`${round(c.wind_speed_10m)} ${compass(c.wind_direction_10m)}`;
-  $("sunsetMetric").textContent=hh(forecast.daily.sunset[0]);
 
   renderHomeChart();
   renderHours();
   renderDays();
+  loadAirCurrent();
   if(currentView==="map"&&map)centerMap()
 }
+
+
+/* AIR QUALITY */
+function airLabel(aqi){
+  const x=Number(aqi);
+  if(!Number.isFinite(x))return"--";
+  if(x<=20)return"Ottima";
+  if(x<=40)return"Buona";
+  if(x<=60)return"Moderata";
+  if(x<=80)return"Scarsa";
+  if(x<=100)return"Molto scarsa";
+  return"Estrema";
+}
+function airCacheKey(){return KEYS.air+placeKey()}
+async function loadAirCurrent(){
+  if(airLoading)return;
+  const cache=loadJSON(airCacheKey(),null);
+  if(cache&&Date.now()-cache.at<30*60*1000){
+    airData=cache.data;renderAirHome();return;
+  }
+  airLoading=true;
+  try{
+    const p=new URLSearchParams({
+      latitude:place.latitude,longitude:place.longitude,timezone:"auto",
+      current:"european_aqi,pm10,pm2_5,nitrogen_dioxide,ozone,carbon_monoxide,sulphur_dioxide"
+    });
+    const res=await fetch("https://air-quality-api.open-meteo.com/v1/air-quality?"+p,{cache:"no-store"});
+    if(!res.ok)throw new Error("air "+res.status);
+    airData=await res.json();
+    saveJSON(airCacheKey(),{at:Date.now(),data:airData});
+    renderAirHome();
+  }catch(e){
+    console.warn(e);
+    if(cache?.data){airData=cache.data;renderAirHome()}
+    else $("airMetric").textContent="--";
+  }finally{airLoading=false}
+}
+function renderAirHome(){
+  const c=airData?.current;if(!c)return;
+  $("airMetric").textContent=`${round(c.european_aqi)} · ${airLabel(c.european_aqi)}`;
+}
+function openAirDetail(){
+  const c=airData?.current;
+  if(!c){toast("Qualità dell'aria non disponibile");return}
+  $("detailTitle").textContent="Qualità dell'aria";
+  $("detailSub").textContent=`AQI europeo · ${airLabel(c.european_aqi)}`;
+  $("detailIcon").innerHTML=`<div style="width:55px;height:55px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.14);font-size:18px;font-weight:850">${round(c.european_aqi)}</div>`;
+  $("detailTemp").textContent=airLabel(c.european_aqi);
+  $("detailGrid").innerHTML=
+    detailBox("PM2.5",`${Number(c.pm2_5||0).toFixed(1)} µg/m³`)+
+    detailBox("PM10",`${Number(c.pm10||0).toFixed(1)} µg/m³`)+
+    detailBox("NO₂",`${Number(c.nitrogen_dioxide||0).toFixed(1)} µg/m³`)+
+    detailBox("O₃",`${Number(c.ozone||0).toFixed(1)} µg/m³`)+
+    detailBox("CO",`${Number(c.carbon_monoxide||0).toFixed(0)} µg/m³`)+
+    detailBox("SO₂",`${Number(c.sulphur_dioxide||0).toFixed(1)} µg/m³`);
+  $("detailOverlay").classList.add("show")
+}
+$("airMetricCard").onclick=openAirDetail;
 
 /* CHARTS */
 function setupCanvas(id){
@@ -1145,7 +1291,7 @@ function renderResults(items){
 }
 async function selectPlace(p){
   place=normalizePlace(p);saveJSON(KEYS.place,place);addRecent(place);closeSearch();
-  forecast=null;models=[];radarReady=false;stopRadar();
+  forecast=null;models=[];airData=null;radarReady=false;stopRadar();
   $("placeName").textContent=place.name;$("placeMeta").textContent=[place.admin2,place.admin1].filter(Boolean).join(" · ")||"Italia";
   if(map){map.setView([place.latitude,place.longitude],7);updateMarker()}
   await loadForecast()
@@ -1220,19 +1366,284 @@ document.querySelectorAll(".compareTab").forEach(b=>b.onclick=()=>{
   compareDay=Number(b.dataset.day);document.querySelectorAll(".compareTab").forEach(x=>x.classList.toggle("active",x===b));renderModels()
 });
 
-/* MAP / RADAR */
+/* MAP / WEATHER LAYERS */
 function initMap(){
   if(map||!window.L)return;
-  map=L.map("map",{zoomControl:false,attributionControl:true,minZoom:4,maxZoom:12}).setView([place.latitude,place.longitude],6);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+  map=L.map("map",{zoomControl:false,attributionControl:true,minZoom:4,maxZoom:12}).setView([42.2,12.6],5);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19,
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+  dataLayer=L.layerGroup().addTo(map);
+  contourLayer=L.layerGroup().addTo(map);
   updateMarker()
 }
 function updateMarker(){
   if(!map)return;if(mapMarker)map.removeLayer(mapMarker);
-  mapMarker=L.circleMarker([place.latitude,place.longitude],{radius:6,color:"#fff",weight:2,fillColor:"#60b8f7",fillOpacity:.95}).addTo(map).bindTooltip(place.name,{direction:"top"})
+  mapMarker=L.circleMarker([place.latitude,place.longitude],{
+    radius:6,color:"#fff",weight:2,fillColor:"#60b8f7",fillOpacity:.95
+  }).addTo(map).bindTooltip(place.name,{direction:"top"})
 }
-function centerMap(){if(map){map.setView([place.latitude,place.longitude],7,{animate:true});updateMarker()}}
+function centerMap(){
+  if(!map)return;
+  if(activeMapLayer==="sea")map.setView([41.3,12.8],5,{animate:true});
+  else if(activeMapLayer==="radar"||activeMapLayer==="temp"||activeMapLayer==="wind"||activeMapLayer==="cloud"||activeMapLayer==="pressure"||activeMapLayer==="air")
+    map.setView([42.2,12.6],5,{animate:true});
+  else map.setView([place.latitude,place.longitude],7,{animate:true});
+  updateMarker()
+}
 $("centerMapBtn").onclick=centerMap;
+
+function clearMapWeather(){
+  stopRadar();
+  if(radarLayer){map?.removeLayer(radarLayer);radarLayer=null}
+  if(heatLayer){map?.removeLayer(heatLayer);heatLayer=null}
+  dataLayer?.clearLayers();
+  contourLayer?.clearLayers()
+}
+function setPanel(title,copy,value="",gradient="linear-gradient(90deg,#4ea4ff,#80d9d0,#ffe879,#ff9f5c,#e95d78)"){
+  $("dataTitle").textContent=title;
+  $("dataCopy").textContent=copy;
+  $("dataValue").textContent=value;
+  $("legendBar").style.background=gradient
+}
+function showRadarPanel(show){
+  $("radarPanel").style.display=show?"block":"none";
+  $("dataPanel").classList.toggle("show",!show)
+}
+function gridURL(){
+  const p=new URLSearchParams({
+    latitude:GRID_POINTS.map(p=>p.lat).join(","),
+    longitude:GRID_POINTS.map(p=>p.lon).join(","),
+    timezone:"GMT",
+    current:"temperature_2m,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m"
+  });
+  return "https://api.open-meteo.com/v1/forecast?"+p
+}
+async function ensureAtmosGrid(){
+  if(atmosGrid)return atmosGrid;
+  const cache=loadJSON(KEYS.atmosGrid,null);
+  if(cache&&Date.now()-cache.at<20*60*1000){atmosGrid=cache.data;return atmosGrid}
+  const res=await fetch(gridURL(),{cache:"no-store"});
+  if(!res.ok)throw new Error("grid "+res.status);
+  let raw=await res.json();if(!Array.isArray(raw))raw=[raw];
+  atmosGrid=raw.map((x,i)=>({
+    ...GRID_POINTS[i],
+    temp:Number(x.current?.temperature_2m),
+    cloud:Number(x.current?.cloud_cover),
+    pressure:Number(x.current?.surface_pressure),
+    wind:Number(x.current?.wind_speed_10m),
+    windDir:Number(x.current?.wind_direction_10m)
+  })).filter(x=>Number.isFinite(x.temp));
+  saveJSON(KEYS.atmosGrid,{at:Date.now(),data:atmosGrid});
+  return atmosGrid
+}
+async function ensureAirGrid(){
+  if(airGrid)return airGrid;
+  const cache=loadJSON(KEYS.airGrid,null);
+  if(cache&&Date.now()-cache.at<60*60*1000){airGrid=cache.data;return airGrid}
+  const p=new URLSearchParams({
+    latitude:GRID_POINTS.map(p=>p.lat).join(","),
+    longitude:GRID_POINTS.map(p=>p.lon).join(","),
+    timezone:"GMT",
+    current:"european_aqi,pm2_5,pm10"
+  });
+  const res=await fetch("https://air-quality-api.open-meteo.com/v1/air-quality?"+p,{cache:"no-store"});
+  if(!res.ok)throw new Error("air grid "+res.status);
+  let raw=await res.json();if(!Array.isArray(raw))raw=[raw];
+  airGrid=raw.map((x,i)=>({
+    ...GRID_POINTS[i],
+    aqi:Number(x.current?.european_aqi),
+    pm25:Number(x.current?.pm2_5),
+    pm10:Number(x.current?.pm10)
+  })).filter(x=>Number.isFinite(x.aqi));
+  saveJSON(KEYS.airGrid,{at:Date.now(),data:airGrid});
+  return airGrid
+}
+async function ensureMarineGrid(){
+  if(marineGrid)return marineGrid;
+  const cache=loadJSON(KEYS.marineGrid,null);
+  if(cache&&Date.now()-cache.at<30*60*1000){marineGrid=cache.data;return marineGrid}
+  const p=new URLSearchParams({
+    latitude:SEA_POINTS.map(p=>p.lat).join(","),
+    longitude:SEA_POINTS.map(p=>p.lon).join(","),
+    timezone:"GMT",cell_selection:"sea",
+    current:"wave_height,wave_direction,wave_period,sea_surface_temperature,ocean_current_velocity,ocean_current_direction"
+  });
+  const res=await fetch("https://marine-api.open-meteo.com/v1/marine?"+p,{cache:"no-store"});
+  if(!res.ok)throw new Error("marine "+res.status);
+  let raw=await res.json();if(!Array.isArray(raw))raw=[raw];
+  marineGrid=raw.map((x,i)=>({
+    ...SEA_POINTS[i],
+    wave:Number(x.current?.wave_height),
+    waveDir:Number(x.current?.wave_direction),
+    wavePeriod:Number(x.current?.wave_period),
+    sst:Number(x.current?.sea_surface_temperature),
+    currentVel:Number(x.current?.ocean_current_velocity),
+    currentDir:Number(x.current?.ocean_current_direction)
+  })).filter(x=>Number.isFinite(x.wave));
+  saveJSON(KEYS.marineGrid,{at:Date.now(),data:marineGrid});
+  return marineGrid
+}
+function tooltipMarker(lat,lon,text){
+  L.circleMarker([lat,lon],{radius:1,opacity:0,fillOpacity:0})
+    .bindTooltip(text,{permanent:true,direction:"center",className:"mapLabel"})
+    .addTo(dataLayer)
+}
+function drawTemperature(data){
+  const vals=data.map(x=>x.temp),min=Math.min(...vals),max=Math.max(...vals),span=Math.max(1,max-min);
+  if(window.L.heatLayer){
+    heatLayer=L.heatLayer(data.map(x=>[x.lat,x.lon,(x.temp-min)/span]),{
+      radius:48,blur:34,maxZoom:7,minOpacity:.28,
+      gradient:{0:"#4b8dff",.35:"#64d6e4",.58:"#f6e77b",.78:"#ff9f5b",1:"#ee5d75"}
+    }).addTo(map)
+  }
+  data.forEach((x,i)=>{if(i%2===0)tooltipMarker(x.lat,x.lon,`${round(x.temp)}°`)});
+  setPanel("Temperatura","Campo attuale campionato sull'Italia con dati Open-Meteo.",`${round(min)}° → ${round(max)}°`,
+    "linear-gradient(90deg,#4b8dff,#64d6e4,#f6e77b,#ff9f5b,#ee5d75)")
+}
+function drawClouds(data){
+  if(window.L.heatLayer){
+    heatLayer=L.heatLayer(data.map(x=>[x.lat,x.lon,Math.max(.02,x.cloud/100)]),{
+      radius:50,blur:35,maxZoom:7,minOpacity:.18,
+      gradient:{0:"rgba(95,173,230,.12)",.35:"#9cc9e4",.7:"#dceaf2",1:"#ffffff"}
+    }).addTo(map)
+  }
+  const avg=data.reduce((s,x)=>s+x.cloud,0)/data.length;
+  data.forEach((x,i)=>{if(i%3===0)tooltipMarker(x.lat,x.lon,`${round(x.cloud)}%`)});
+  setPanel("Nuvolosità","Copertura nuvolosa attuale. Più chiaro = cielo più coperto.",`${round(avg)}% media`,
+    "linear-gradient(90deg,rgba(95,173,230,.28),#9cc9e4,#dceaf2,#fff)")
+}
+function drawWind(data){
+  data.forEach((x,i)=>{
+    if(i%2!==0)return;
+    const icon=L.divIcon({
+      className:"",
+      html:`<div class="wind-marker"><div class="wind-arrow" style="transform:rotate(${x.windDir}deg)">↑</div><div class="wind-speed">${round(x.wind)} km/h</div></div>`,
+      iconSize:[34,34],iconAnchor:[17,17]
+    });
+    L.marker([x.lat,x.lon],{icon,interactive:true}).bindTooltip(`${round(x.wind)} km/h · ${compass(x.windDir)}`).addTo(dataLayer)
+  });
+  const max=Math.max(...data.map(x=>x.wind));
+  setPanel("Vento","Frecce = provenienza/direzione modellistica; valore = velocità a 10 m.",`max ${round(max)} km/h`,
+    "linear-gradient(90deg,#b6e5ff,#7dd7da,#ffe978,#ffab65)")
+}
+function interpolateEdge(a,b,va,vb,level){
+  if(!Number.isFinite(va)||!Number.isFinite(vb)||va===vb)return null;
+  const da=va-level,db=vb-level;
+  if(da===0)return a;if(db===0)return b;if(da*db>0)return null;
+  const t=(level-va)/(vb-va);
+  return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]
+}
+function drawPressure(data){
+  const matrix=[];
+  for(let i=0;i<GRID_LATS.length;i++){
+    matrix[i]=[];
+    for(let j=0;j<GRID_LONS.length;j++)matrix[i][j]=data[i*GRID_LONS.length+j]
+  }
+  const values=data.map(x=>x.pressure).filter(Number.isFinite),min=Math.min(...values),max=Math.max(...values);
+  const first=Math.ceil(min/5)*5,last=Math.floor(max/5)*5;
+  const levels=[];for(let l=first;l<=last;l+=5)levels.push(l);
+
+  levels.forEach((level,li)=>{
+    for(let i=0;i<GRID_LATS.length-1;i++)for(let j=0;j<GRID_LONS.length-1;j++){
+      const a=matrix[i][j],b=matrix[i][j+1],c=matrix[i+1][j+1],d=matrix[i+1][j];
+      if(!a||!b||!c||!d)continue;
+      const pa=[a.lat,a.lon],pb=[b.lat,b.lon],pc=[c.lat,c.lon],pd=[d.lat,d.lon];
+      const pts=[
+        interpolateEdge(pa,pb,a.pressure,b.pressure,level),
+        interpolateEdge(pb,pc,b.pressure,c.pressure,level),
+        interpolateEdge(pc,pd,c.pressure,d.pressure,level),
+        interpolateEdge(pd,pa,d.pressure,a.pressure,level)
+      ].filter(Boolean);
+      if(pts.length>=2)L.polyline([pts[0],pts[1]],{color:"rgba(255,255,255,.72)",weight:1.2,opacity:.82,interactive:false}).addTo(contourLayer);
+      if(pts.length===4)L.polyline([pts[2],pts[3]],{color:"rgba(255,255,255,.72)",weight:1.2,opacity:.82,interactive:false}).addTo(contourLayer);
+    }
+  });
+
+  for(let i=1;i<GRID_LATS.length-1;i++)for(let j=1;j<GRID_LONS.length-1;j++){
+    const x=matrix[i][j];if(!x||!Number.isFinite(x.pressure))continue;
+    const neighbors=[];
+    for(let di=-1;di<=1;di++)for(let dj=-1;dj<=1;dj++)if(di||dj)neighbors.push(matrix[i+di][j+dj]?.pressure);
+    const isLow=neighbors.every(v=>Number.isFinite(v)&&x.pressure<=v)&&x.pressure<1013;
+    const isHigh=neighbors.every(v=>Number.isFinite(v)&&x.pressure>=v)&&x.pressure>1018;
+    if(isLow||isHigh){
+      const icon=L.divIcon({className:"",html:`<div class="pressure-center"><div class="pressure-letter">${isLow?"L":"H"}</div><div class="pressure-val">${round(x.pressure)}</div></div>`,iconSize:[34,34],iconAnchor:[17,17]});
+      L.marker([x.lat,x.lon],{icon}).addTo(dataLayer)
+    }
+  }
+  setPanel("Pressione / sistemi","Isobare stimate dalla griglia. L = minimo, H = massimo locale.",`${round(min)}–${round(max)} hPa`,
+    "linear-gradient(90deg,#7aa7ff,#c8dcff,#fff,#ffd0a2,#ff8f7b)")
+}
+function aqiColor(aqi){
+  if(aqi<=20)return"#56d8a0";if(aqi<=40)return"#95df7a";if(aqi<=60)return"#f1dc64";if(aqi<=80)return"#f2a45d";if(aqi<=100)return"#e67367";return"#a66cbe"
+}
+function drawAir(data){
+  data.forEach(x=>{
+    L.circleMarker([x.lat,x.lon],{
+      radius:9,color:"rgba(255,255,255,.55)",weight:1,
+      fillColor:aqiColor(x.aqi),fillOpacity:.78
+    }).bindTooltip(`AQI ${round(x.aqi)} · PM2.5 ${x.pm25.toFixed(0)}`).addTo(dataLayer)
+  });
+  const nearest=airData?.current?.european_aqi;
+  const avg=data.reduce((s,x)=>s+x.aqi,0)/data.length;
+  setPanel("Qualità dell'aria","Indice europeo CAMS. Tocca i punti per AQI e PM2.5.",Number.isFinite(Number(nearest))?`qui ${round(nearest)}`:`media ${round(avg)}`,
+    "linear-gradient(90deg,#56d8a0,#95df7a,#f1dc64,#f2a45d,#e67367,#a66cbe)")
+}
+function waveColor(v){
+  if(v<.5)return"#68d9c2";if(v<1)return"#63c7e6";if(v<2)return"#5a9df2";if(v<3)return"#8c79e6";return"#ce6fbc"
+}
+function drawSea(data){
+  data.forEach(x=>{
+    const icon=L.divIcon({
+      className:"",
+      html:`<div class="wave-marker" style="box-shadow:0 0 0 5px ${waveColor(x.wave)}33"><div class="wave-main">${x.wave.toFixed(1)}m</div><div class="wave-dir" style="transform:rotate(${x.waveDir}deg)">↑</div></div>`,
+      iconSize:[36,36],iconAnchor:[18,18]
+    });
+    const popup=`<b>${x.name}</b><br>Onde ${x.wave.toFixed(1)} m<br>Periodo ${Number.isFinite(x.wavePeriod)?x.wavePeriod.toFixed(1):"--"} s<br>Mare ${Number.isFinite(x.sst)?x.sst.toFixed(1):"--"} °C<br>Corrente ${Number.isFinite(x.currentVel)?x.currentVel.toFixed(1):"--"} km/h`;
+    L.marker([x.lat,x.lon],{icon}).bindPopup(popup).addTo(dataLayer)
+  });
+  const max=Math.max(...data.map(x=>x.wave));
+  setPanel("Mare","Onde, periodo, temperatura superficiale e correnti. Tocca un punto.",`onde max ${max.toFixed(1)} m`,
+    "linear-gradient(90deg,#68d9c2,#63c7e6,#5a9df2,#8c79e6,#ce6fbc)")
+}
+async function setMapLayer(kind){
+  activeMapLayer=kind;
+  document.querySelectorAll(".layerBtn").forEach(b=>b.classList.toggle("active",b.dataset.layer===kind));
+  clearMapWeather();
+  centerMap();
+
+  const titles={radar:"RADAR · OSSERVATO",temp:"TEMPERATURA",wind:"VENTO",cloud:"NUBI",pressure:"PRESSIONE · SISTEMI",air:"QUALITÀ ARIA",sea:"MARE · ONDE"};
+  $("mapModeTitle").textContent=titles[kind]||kind.toUpperCase();
+
+  if(kind==="radar"){
+    showRadarPanel(true);await loadRadar();return
+  }
+
+  showRadarPanel(false);
+  setPanel(titles[kind],"Caricamento dati…","");
+
+  try{
+    if(kind==="temp"||kind==="wind"||kind==="cloud"||kind==="pressure"){
+      const data=await ensureAtmosGrid();
+      if(kind==="temp")drawTemperature(data);
+      if(kind==="wind")drawWind(data);
+      if(kind==="cloud")drawClouds(data);
+      if(kind==="pressure")drawPressure(data);
+    }else if(kind==="air"){
+      await loadAirCurrent();
+      drawAir(await ensureAirGrid())
+    }else if(kind==="sea"){
+      drawSea(await ensureMarineGrid())
+    }
+  }catch(e){
+    console.error(e);
+    setPanel(titles[kind],"Dati temporaneamente non disponibili.","--")
+  }
+}
+document.querySelectorAll(".layerBtn").forEach(b=>b.onclick=()=>setMapLayer(b.dataset.layer));
+
+/* RADAR */
 async function loadRadar(){
   if(radarReady&&radarFrames.length){renderRadar(radarIndex);return}
   try{
@@ -1244,7 +1655,7 @@ async function loadRadar(){
   }catch(e){console.error(e);$("radarStatus").textContent="Radar non disponibile"}
 }
 function renderRadar(i){
-  if(!map||!radarFrames.length)return;
+  if(!map||!radarFrames.length||activeMapLayer!=="radar")return;
   radarIndex=Math.max(0,Math.min(i,radarFrames.length-1));const f=radarFrames[radarIndex];
   if(radarLayer)map.removeLayer(radarLayer);
   radarLayer=L.tileLayer(`${radarHost}${f.path}/256/{z}/{x}/{y}/2/1_1.png`,{opacity:.62,maxNativeZoom:7,maxZoom:12,zIndex:400}).addTo(map);
@@ -1270,7 +1681,7 @@ function setView(view){
   if(view==="hours")requestAnimationFrame(drawHoursChart);
   if(view==="compare")ensureModels();
   if(view==="map"){
-    initMap();setTimeout(()=>{map?.invalidateSize();centerMap();loadRadar()},120)
+    initMap();setTimeout(()=>{map?.invalidateSize();setMapLayer(activeMapLayer)},120)
   }else stopRadar()
 }
 document.querySelectorAll(".navBtn").forEach(b=>b.onclick=()=>setView(b.dataset.view));
