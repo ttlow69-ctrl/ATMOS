@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-<title>ATMOS</title>
+<title>ATMOS · Map Focus</title>
 
 <style>
 :root{
@@ -454,6 +454,144 @@ input[type=range]{width:100%;accent-color:#fff}
   .insight{height:31px;flex-basis:31px}.workspace{padding:6px}.nav{height:48px;flex-basis:48px}
   .home{grid-template-rows:30px 118px 1fr}.hours{grid-template-rows:31px 145px 1fr}
 }
+
+
+/* =========================================================
+   ATMOS V11.1 — MAP FOCUS UX
+   In modalità MAPPA il meteo hero si comprime e la cartina
+   diventa la protagonista. Layer in una sola riga, pannello
+   info compatto ed espandibile con un tap.
+========================================================= */
+body.map-mode .app{gap:5px}
+body.map-mode .hero,
+body.map-mode .insight{display:none}
+body.map-mode .top{flex:0 0 43px;height:43px}
+body.map-mode .placeName{font-size:18px}
+body.map-mode .placeMeta{font-size:8px;color:rgba(255,255,255,.76)}
+body.map-mode .workspace{
+  padding:0;
+  border:0;
+  border-radius:25px;
+  background:transparent!important;
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+body.map-mode #mapView{border-radius:25px;overflow:hidden}
+body.map-mode .mapWrap{border-radius:25px}
+
+/* Il titolo del layer è già comunicato dal chip attivo. */
+body.map-mode .mapHeader{
+  left:auto;right:8px;top:8px;width:36px;
+  justify-content:flex-end
+}
+body.map-mode .mapPill{display:none}
+body.map-mode .centerBtn{
+  width:36px;height:36px;
+  background:rgba(24,67,101,.78);
+  box-shadow:0 8px 24px rgba(9,43,75,.16)
+}
+
+/* Dock monoriga: un gesto orizzontale, nessun menu dentro menu. */
+body.map-mode .layerDock{
+  left:8px;right:52px;top:8px;
+  height:36px;
+  display:flex;
+  grid-template-columns:none;
+  align-items:center;
+  gap:4px;
+  padding:3px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:none;
+  overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch;
+  background:rgba(24,67,101,.72);
+  border-radius:15px;
+  box-shadow:0 8px 24px rgba(9,43,75,.12)
+}
+body.map-mode .layerDock::-webkit-scrollbar{display:none}
+body.map-mode .layerBtn{
+  flex:0 0 auto;
+  height:30px;
+  padding:0 11px;
+  border-radius:12px;
+  font-size:7.2px;
+  letter-spacing:.015em;
+  color:rgba(255,255,255,.72)
+}
+body.map-mode .layerBtn.active{
+  background:rgba(255,255,255,.23);
+  color:#fff;
+  box-shadow:0 3px 12px rgba(0,0,0,.08)
+}
+
+/* Pannelli inferiori più piccoli: dati subito, spiegazione solo su richiesta. */
+body.map-mode .radar,
+body.map-mode .dataPanel{
+  left:8px;right:8px;bottom:8px;
+  border-radius:16px;
+  background:rgba(24,67,101,.84);
+  box-shadow:0 12px 34px rgba(8,42,72,.18)
+}
+body.map-mode .radar{padding:7px 9px}
+body.map-mode .radarMain{grid-template-columns:29px 1fr 42px;gap:7px}
+body.map-mode .playBtn{width:29px;height:29px}
+body.map-mode .radarFoot{font-size:6px;margin-top:3px}
+
+body.map-mode .dataPanel{
+  min-height:48px;
+  padding:8px 10px;
+  cursor:pointer;
+  transition:min-height .2s ease, padding .2s ease, background .2s ease
+}
+body.map-mode .dataTop{align-items:center}
+body.map-mode .dataTitle{font-size:9.5px}
+body.map-mode .dataValue{font-size:15px}
+body.map-mode .dataCopy{
+  display:none;
+  max-width:none;
+  margin-top:4px;
+  font-size:6.7px;
+  line-height:1.35
+}
+body.map-mode .legendBar{height:3px;margin-top:6px}
+body.map-mode .dataPanel.expanded{
+  min-height:68px;
+  background:rgba(20,60,92,.91)
+}
+body.map-mode .dataPanel.expanded .dataTop{align-items:flex-start}
+body.map-mode .dataPanel.expanded .dataCopy{display:block}
+body.map-mode .dataPanel::after{
+  content:"tocca per dettagli";
+  position:absolute;
+  right:10px;
+  bottom:4px;
+  font-size:5.6px;
+  color:rgba(255,255,255,.42);
+  pointer-events:none
+}
+body.map-mode .dataPanel.expanded::after{content:"tocca per chiudere"}
+
+/* Attribution più discreta senza rimuoverla. */
+body.map-mode .leaflet-control-attribution{
+  font-size:6px!important;
+  max-width:58%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+
+/* Sulla mappa la barra inferiore resta fissa ma un filo più compatta. */
+body.map-mode .nav{flex-basis:53px;height:53px}
+
+@media(max-height:700px){
+  body.map-mode .top{height:36px;flex-basis:36px}
+  body.map-mode .nav{height:45px;flex-basis:45px}
+  body.map-mode .layerDock{height:33px}
+  body.map-mode .layerBtn{height:27px;padding:0 9px}
+}
+
 </style>
 </head>
 
@@ -1607,9 +1745,25 @@ function drawSea(data){
   setPanel("Mare","Onde, periodo, temperatura superficiale e correnti. Tocca un punto.",`onde max ${max.toFixed(1)} m`,
     "linear-gradient(90deg,#68d9c2,#63c7e6,#5a9df2,#8c79e6,#ce6fbc)")
 }
+
+function syncHeaderForView(){
+  if(currentView==="map"&&forecast){
+    $("placeName").textContent=place.name;
+    $("placeMeta").textContent=`${round(forecast.current.temperature_2m)}° · ${weatherText(forecast.current.weather_code)}`;
+  }else{
+    $("placeName").textContent=place.name;
+    $("placeMeta").textContent=[place.admin2,place.admin1].filter(Boolean).join(" · ")||"Italia";
+  }
+}
+
 async function setMapLayer(kind){
   activeMapLayer=kind;
-  document.querySelectorAll(".layerBtn").forEach(b=>b.classList.toggle("active",b.dataset.layer===kind));
+  $("dataPanel").classList.remove("expanded");
+  document.querySelectorAll(".layerBtn").forEach(b=>{
+    const active=b.dataset.layer===kind;
+    b.classList.toggle("active",active);
+    if(active&&currentView==="map")setTimeout(()=>b.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"}),20);
+  });
   clearMapWeather();
   centerMap();
 
@@ -1643,6 +1797,10 @@ async function setMapLayer(kind){
 }
 document.querySelectorAll(".layerBtn").forEach(b=>b.onclick=()=>setMapLayer(b.dataset.layer));
 
+$("dataPanel").addEventListener("click",()=>{
+  if(currentView==="map"&&activeMapLayer!=="radar")$("dataPanel").classList.toggle("expanded");
+});
+
 /* RADAR */
 async function loadRadar(){
   if(radarReady&&radarFrames.length){renderRadar(radarIndex);return}
@@ -1674,15 +1832,24 @@ $("radarSlider").oninput=e=>{stopRadar();renderRadar(Number(e.target.value))};
 /* NAV */
 function setView(view){
   currentView=view;
+  document.body.classList.toggle("map-mode",view==="map");
   ["home","hours","days","compare","map"].forEach(v=>$(v+"View").classList.toggle("active",v===view));
   document.querySelectorAll(".navBtn").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+  syncHeaderForView();
   if(navigator.vibrate)navigator.vibrate(6);
   if(view==="home")renderHomeChart();
   if(view==="hours")requestAnimationFrame(drawHoursChart);
   if(view==="compare")ensureModels();
   if(view==="map"){
-    initMap();setTimeout(()=>{map?.invalidateSize();setMapLayer(activeMapLayer)},120)
-  }else stopRadar()
+    initMap();
+    setTimeout(()=>{
+      map?.invalidateSize();
+      setMapLayer(activeMapLayer);
+    },160)
+  }else{
+    $("dataPanel").classList.remove("expanded");
+    stopRadar();
+  }
 }
 document.querySelectorAll(".navBtn").forEach(b=>b.onclick=()=>setView(b.dataset.view));
 
