@@ -1,4 +1,4 @@
-const CACHE_NAME = "atmos-shell-v2";
+const CACHE_NAME = "atmos-shell-v3";
 
 const APP_SHELL = [
   "/",
@@ -8,7 +8,8 @@ const APP_SHELL = [
   "/icons/icon-512.png",
   "/icons/maskable-512.png",
   "/icons/apple-touch-icon.png",
-  "/icons/favicon-32.png"
+  "/icons/favicon-32.png",
+  "/icons/splash-orb.png"
 ];
 
 self.addEventListener("install", event => {

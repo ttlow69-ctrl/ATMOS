@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#4D9DF7">
+<meta name="theme-color" content="#17232D">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-<title>ATMOS · Map Focus 11.2</title>
+<title>ATMOS · Cinematic 13.1</title>
 
 <style>
 :root{
@@ -603,10 +603,663 @@ body.map-mode .nav{flex-basis:53px;height:53px}
   body.map-mode .layerBtn{height:27px;padding:0 9px}
 }
 
+
+/* =========================================================
+   ATMOS CINEMATIC — reference-inspired, original design
+   ========================================================= */
+:root{
+  --text:#f5f8fb;
+  --muted:rgba(238,245,250,.74);
+  --faint:rgba(238,245,250,.46);
+  --glass:rgba(28,42,54,.34);
+  --glass-strong:rgba(23,36,47,.62);
+  --stroke:rgba(255,255,255,.16);
+  --shadow:0 20px 55px rgba(4,12,20,.30);
+  --cinema1:#17232d;
+  --cinema2:#324553;
+  --cinema3:#60717c;
+  --accent-soft:#b9d6e5;
+}
+
+body{
+  background:
+    radial-gradient(circle at 78% 12%,rgba(215,230,238,.15),transparent 22%),
+    linear-gradient(155deg,var(--cinema1),var(--cinema2) 55%,var(--cinema3));
+}
+body[data-sky="clear"]{--cinema1:#20303b;--cinema2:#536877;--cinema3:#84929a}
+body[data-sky="cloud"]{--cinema1:#17212a;--cinema2:#3b4b57;--cinema3:#697782}
+body[data-sky="rain"]{--cinema1:#121b23;--cinema2:#2d3d49;--cinema3:#566874}
+body[data-sky="storm"]{--cinema1:#0d141b;--cinema2:#263640;--cinema3:#4d606d}
+body[data-sky="snow"]{--cinema1:#273640;--cinema2:#647580;--cinema3:#a0adb5}
+body[data-sky="fog"]{--cinema1:#3d4a52;--cinema2:#76828a;--cinema3:#aeb7bc}
+body[data-sky="night"]{--cinema1:#071019;--cinema2:#172938;--cinema3:#344957}
+
+.sky{
+  background:
+    radial-gradient(ellipse at 56% 28%,rgba(255,255,255,.13),transparent 30%),
+    radial-gradient(ellipse at 80% 16%,rgba(255,255,255,.10),transparent 25%);
+}
+.sky::before{
+  content:"";
+  position:absolute;
+  width:110vw;height:42vh;
+  left:-14vw;top:12vh;
+  border-radius:50%;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(218,229,235,.16),transparent 42%),
+    radial-gradient(ellipse at 48% 50%,rgba(160,178,190,.22),transparent 40%),
+    radial-gradient(ellipse at 78% 48%,rgba(90,109,122,.28),transparent 42%);
+  filter:blur(28px);
+  animation:cinemaCloud 14s ease-in-out infinite alternate;
+  opacity:.9;
+}
+.sky::after{
+  content:"";
+  position:absolute;inset:-20%;
+  opacity:0;
+  pointer-events:none;
+}
+body[data-sky="rain"] .sky::after,
+body[data-sky="storm"] .sky::after{
+  opacity:.26;
+  background:repeating-linear-gradient(
+    105deg,
+    transparent 0 17px,
+    rgba(220,238,248,.50) 18px 19px,
+    transparent 20px 35px
+  );
+  transform:translateY(-12%);
+  animation:cinemaRain 1.3s linear infinite;
+}
+@keyframes cinemaCloud{
+  to{transform:translate3d(9vw,-1.5vh,0) scale(1.07)}
+}
+@keyframes cinemaRain{
+  to{transform:translate3d(-3vw,14%,0)}
+}
+.sunGlow{
+  right:-7%;top:-10%;
+  width:72vw;height:72vw;
+  max-width:470px;max-height:470px;
+  background:radial-gradient(circle,rgba(238,245,248,.20),rgba(255,255,255,0) 68%);
+  filter:blur(12px);
+}
+.cloud{
+  background:rgba(215,227,234,.10);
+  filter:blur(28px);
+}
+.cloud.one{width:260px;height:80px;top:21%}
+.cloud.two{width:220px;height:72px;top:34%}
+
+.app{
+  padding:max(11px,env(safe-area-inset-top)) 13px max(9px,env(safe-area-inset-bottom));
+  gap:8px;
+}
+
+.top{
+  flex:0 0 46px;height:46px;
+  padding:0 3px;
+}
+.placeBtn{gap:10px}
+.pin{
+  width:8px;height:8px;
+  box-shadow:0 0 0 6px rgba(255,255,255,.10),0 0 22px rgba(210,235,248,.30)
+}
+.placeName{
+  display:block;
+  font-size:22px;
+  font-weight:520;
+  letter-spacing:-.025em;
+}
+.placeMeta{
+  display:block;
+  margin-top:5px;
+  font-size:7px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(242,247,250,.58)
+}
+.chevron{font-size:16px;color:rgba(255,255,255,.65)}
+.iconBtn{
+  width:39px;height:39px;
+  background:rgba(31,47,59,.36);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:inset 0 1px rgba(255,255,255,.08);
+  backdrop-filter:blur(20px)
+}
+
+.hero{
+  flex:0 0 clamp(190px,27vh,248px);
+  position:relative;
+  align-items:flex-start;
+  justify-content:flex-end;
+  text-align:left;
+  padding:8px 12px 12px;
+  overflow:visible;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  right:-8%;top:-24%;
+  width:240px;height:240px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(231,242,247,.12),transparent 68%);
+  filter:blur(8px);
+}
+.hero::after{
+  content:"ATMOS  /  WEATHER INTELLIGENCE";
+  position:absolute;
+  left:13px;top:10px;
+  font-size:6.5px;
+  font-weight:800;
+  letter-spacing:.22em;
+  color:rgba(245,249,251,.44)
+}
+.heroWeather{
+  width:100%;
+  justify-content:flex-start;
+  align-items:flex-end;
+  gap:6px;
+  position:relative;
+  z-index:2
+}
+.heroIcon{
+  position:absolute;
+  right:-2px;
+  bottom:4px;
+  width:142px;height:142px;
+  opacity:.92;
+  filter:drop-shadow(0 18px 24px rgba(0,0,0,.24)) saturate(.78)
+}
+.temp{
+  font-size:94px;
+  line-height:.78;
+  font-weight:160;
+  letter-spacing:-7px;
+  text-shadow:0 12px 34px rgba(0,0,0,.30)
+}
+.condition{
+  max-width:67%;
+  margin-top:13px;
+  font-size:25px;
+  line-height:1;
+  font-weight:440;
+  letter-spacing:-.03em;
+  text-shadow:0 4px 20px rgba(0,0,0,.22)
+}
+.heroMeta{
+  gap:14px;
+  margin-top:8px;
+  font-size:10px;
+  color:rgba(245,248,250,.66)
+}
+.heroMeta b{font-weight:650}
+.updated{
+  margin-top:6px;
+  font-size:6.7px;
+  letter-spacing:.05em;
+  color:rgba(245,248,250,.42)
+}
+
+.insight{
+  flex:0 0 42px;height:42px;
+  border-radius:14px;
+  grid-template-columns:27px 1fr auto;
+  padding:0 10px;
+}
+.insight.glass{
+  background:linear-gradient(120deg,rgba(33,49,61,.55),rgba(79,95,106,.23));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 12px 30px rgba(3,12,19,.18)
+}
+.aiDot{
+  width:24px;height:24px;
+  background:rgba(235,244,248,.12);
+  border:1px solid rgba(255,255,255,.12);
+  font-size:8px
+}
+.insightText{
+  font-size:9.5px;
+  font-weight:580;
+  letter-spacing:.005em
+}
+.insightTag{
+  padding:4px 7px;
+  background:rgba(236,245,249,.10);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:6px;
+  letter-spacing:.08em
+}
+
+.workspace{
+  border-radius:22px;
+  padding:0;
+}
+.workspace.glass{
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none
+}
+
+.home{
+  grid-template-rows:27px 132px 1fr;
+  gap:7px
+}
+.sectionHead{padding:0 5px}
+.sectionTitle{
+  font-size:10px;
+  font-weight:620;
+  letter-spacing:.02em
+}
+.sectionSub{
+  font-size:6.5px;
+  letter-spacing:.04em
+}
+
+.homeChart,.bigChart,.brief,.metric,.hourCard,.dayRow,.modelRow,.compareHero{
+  background:linear-gradient(135deg,rgba(29,44,56,.48),rgba(73,88,99,.20));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 12px 30px rgba(5,14,20,.12);
+  backdrop-filter:blur(18px) saturate(.9);
+  -webkit-backdrop-filter:blur(18px) saturate(.9)
+}
+.homeChart{
+  border-radius:18px;
+  padding:7px 8px
+}
+.chartLegendMain{font-size:7.5px;font-weight:680}
+.chartLegendSub{font-size:6.2px;color:rgba(255,255,255,.52)}
+.homeBottom{gap:7px}
+.brief{
+  border-radius:18px;
+  padding:11px
+}
+.briefLabel{
+  font-size:6.2px;
+  color:rgba(255,255,255,.50);
+  letter-spacing:.13em
+}
+.briefMain{
+  font-size:15px;
+  font-weight:560;
+  line-height:1.05
+}
+.briefSub{
+  font-size:7px;
+  color:rgba(255,255,255,.58)
+}
+.metrics{gap:6px}
+.metric{
+  border-radius:15px;
+  padding:0 10px
+}
+.metricK{
+  font-size:6px;
+  letter-spacing:.10em;
+  color:rgba(255,255,255,.48)
+}
+.metricV{
+  font-size:11px;
+  font-weight:620
+}
+
+.hours{grid-template-rows:36px 178px 1fr}
+.bigChart{border-radius:20px}
+.hourCard{border-radius:16px}
+.hourTemp{font-weight:610}
+.days{
+  border-radius:20px;
+  overflow:hidden;
+  background:rgba(27,41,52,.22);
+  border:1px solid rgba(255,255,255,.10);
+  backdrop-filter:blur(18px)
+}
+.dayRow{
+  border-radius:0;
+  border-left:0;border-right:0;border-top:0;
+  box-shadow:none;
+  background:rgba(255,255,255,.015)
+}
+.dayName,.daysTitle{font-weight:610}
+.tempFill{
+  background:linear-gradient(90deg,rgba(183,213,228,.72),rgba(250,245,226,.92))
+}
+.compareHero{border-radius:20px}
+.compareTitle,.modelName,.modelMain{font-weight:620}
+
+.nav{
+  flex:0 0 58px;height:58px;
+  border-radius:20px;
+  padding:4px;
+}
+.nav.glass{
+  background:linear-gradient(145deg,rgba(25,39,50,.60),rgba(67,82,92,.27));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 14px 35px rgba(3,10,16,.24)
+}
+.navBtn{
+  border-radius:16px;
+  color:rgba(240,246,249,.48)
+}
+.navBtn.active{
+  background:rgba(235,244,248,.11);
+  color:#fff;
+  box-shadow:inset 0 1px rgba(255,255,255,.08)
+}
+.navBtn svg{width:17px;height:17px;stroke-width:1.5}
+.navLabel{font-size:5.8px;font-weight:650;letter-spacing:.04em}
+
+/* Map keeps the focus layout, but inherits the cinematic palette. */
+body.map-mode .top{background:transparent}
+body.map-mode .workspace{border-radius:24px}
+body.map-mode #mapView,
+body.map-mode .mapWrap{border-radius:24px}
+body.map-mode .layerDock,
+body.map-mode .radar,
+body.map-mode .dataPanel,
+body.map-mode .centerBtn{
+  background:rgba(24,38,49,.78);
+  border-color:rgba(255,255,255,.12)
+}
+body.map-mode .layerBtn.active{
+  background:rgba(237,245,249,.14)
+}
+.leaflet-tile-pane{
+  filter:saturate(.45) brightness(.70) contrast(1.10)
+}
+
+@media(max-height:760px){
+  .hero{flex-basis:165px}
+  .heroIcon{width:116px;height:116px}
+  .temp{font-size:74px}
+  .condition{font-size:20px;margin-top:8px}
+  .home{grid-template-rows:25px 114px 1fr}
+  .insight{height:36px;flex-basis:36px}
+  .nav{height:51px;flex-basis:51px}
+}
+
+
+/* =========================================================
+   ATMOS V13.1 — CINEMATIC FIX
+   Fix reali emersi dal test su Samsung
+   ========================================================= */
+
+/* 1) Condizione meteo: niente più "Prevalentemente s..." */
+.condition{
+  width:auto;
+  max-width:min(78%,430px);
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  font-size:clamp(20px,5.3vw,27px);
+  line-height:1.04;
+  padding-right:4px;
+}
+
+/* Evita che l'illustrazione meteo rubi troppo spazio al titolo */
+.heroIcon{
+  right:2px;
+  bottom:13px;
+  width:min(34vw,138px);
+  height:min(34vw,138px);
+  opacity:.82;
+}
+.heroMeta{
+  flex-wrap:wrap;
+  row-gap:3px;
+}
+
+/* 2) Ricerca: tolto il vecchio foglio blu pieno */
+.overlay{
+  background:
+    radial-gradient(circle at 80% 10%,rgba(209,226,235,.10),transparent 28%),
+    rgba(7,16,23,.58);
+  backdrop-filter:blur(26px) saturate(.85);
+  -webkit-backdrop-filter:blur(26px) saturate(.85);
+  padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));
+}
+.searchSheet{
+  height:100%;
+  border-radius:28px;
+  padding:16px;
+  background:
+    linear-gradient(155deg,rgba(22,34,43,.92),rgba(46,63,74,.78));
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.055),
+    0 28px 90px rgba(0,0,0,.38);
+  backdrop-filter:blur(30px) saturate(.82);
+  -webkit-backdrop-filter:blur(30px) saturate(.82);
+}
+.searchHead::before{
+  content:"ATMOS / PLACES";
+  position:absolute;
+  margin-top:-37px;
+  font-size:6px;
+  font-weight:800;
+  letter-spacing:.20em;
+  color:rgba(255,255,255,.34);
+}
+.searchTitle{
+  font-size:23px;
+  font-weight:520;
+  letter-spacing:-.025em;
+}
+.closeBtn,.gpsBtn{
+  background:rgba(235,244,248,.07);
+  border-color:rgba(255,255,255,.11);
+}
+.searchInput{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(230,240,246,.055);
+  color:#f7fafb;
+  font-size:12px;
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.searchInput::placeholder{color:rgba(244,248,250,.38)}
+.quickBox,.result{
+  background:rgba(230,240,246,.045);
+  border-color:rgba(255,255,255,.095);
+}
+.quickBox{
+  border-radius:17px;
+  padding:10px;
+}
+.quickK{
+  color:rgba(245,248,250,.43);
+  letter-spacing:.13em;
+}
+.quickPlace{
+  background:rgba(235,244,248,.075);
+  color:rgba(255,255,255,.91);
+}
+.result:active{background:rgba(235,244,248,.09)}
+
+/* 3) Dettaglio ora/giorno: stesso linguaggio dell'app, non più blu */
+.detailOverlay{
+  background:rgba(5,13,19,.58);
+  backdrop-filter:blur(24px) saturate(.82);
+  -webkit-backdrop-filter:blur(24px) saturate(.82);
+}
+.detailSheet{
+  width:calc(100% - 20px);
+  max-width:540px;
+  margin-bottom:max(10px,env(safe-area-inset-bottom));
+  padding:18px;
+  border-radius:29px;
+  background:
+    linear-gradient(155deg,rgba(22,34,43,.96),rgba(53,69,79,.91));
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.055),
+    0 32px 95px rgba(0,0,0,.44);
+}
+.detailTitle{
+  font-size:23px;
+  font-weight:540;
+  letter-spacing:-.02em;
+}
+.detailSub{color:rgba(244,248,250,.48)}
+.detailBox{
+  background:rgba(235,244,248,.055);
+  border-color:rgba(255,255,255,.095);
+  border-radius:16px;
+}
+.detailK{
+  color:rgba(245,248,250,.43);
+  letter-spacing:.10em;
+}
+.detailV{font-weight:650}
+
+/* 4) Toast coerente */
+.toast{
+  background:rgba(22,35,44,.94);
+  border-color:rgba(255,255,255,.11);
+  box-shadow:0 14px 34px rgba(0,0,0,.28);
+}
+
+/* 5) I pannelli principali rimangono leggibili senza sembrare contorni vuoti */
+.homeChart,.bigChart,.brief,.metric,.hourCard,.compareHero,.modelRow{
+  border-color:rgba(255,255,255,.105);
+}
+.dayRow{border-color:rgba(255,255,255,.07)}
+
+/* 6) Mobile reale: condizioni lunghe e schermi bassi */
+@media(max-width:420px){
+  .condition{max-width:76%;font-size:22px}
+  .heroIcon{width:128px;height:128px;opacity:.76}
+  .searchTitle{font-size:21px}
+}
+@media(max-height:760px){
+  .condition{
+    max-width:74%;
+    font-size:19px;
+    line-height:1.03;
+    margin-top:7px;
+  }
+  .heroIcon{
+    width:105px;
+    height:105px;
+    bottom:7px;
+  }
+}
+
+/* === STARTUP SPLASH (Jexx family) === */
+/* Startup splash — port of the JEXX cinematic splash. Colours/timing come from CSS vars set by splashStyle(). */
+#appSplash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;background:var(--sp-bg);opacity:1;visibility:visible;transform:translateZ(0);transition:opacity var(--sp-exit) ease,visibility var(--sp-exit) ease;isolation:isolate}
+#appSplash.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
+/* Animations wait until the Orb image is decoded so it never pops in. */
+#appSplash:not(.is-armed) *{animation-play-state:paused!important}
+.sp-bg{position:absolute;inset:-18%;background:radial-gradient(circle at 50% 47%,rgba(var(--sp-c1),.17) 0%,rgba(var(--sp-c2),.10) 19%,rgba(var(--sp-c3),.055) 31%,transparent 54%),radial-gradient(circle at 50% 115%,rgba(var(--sp-c2),.12),transparent 42%);filter:blur(14px);animation:spBgPulse var(--sp-dur) ease-in-out both}
+.sp-stars{position:absolute;inset:-20%;opacity:0;background-image:radial-gradient(circle,rgba(var(--sp-star1),.9) 0 1px,transparent 1.6px),radial-gradient(circle,rgba(var(--sp-star2),.7) 0 1px,transparent 1.5px);background-size:73px 73px,109px 109px;background-position:11px 21px,44px 58px;mask-image:radial-gradient(circle at center,#000 0 34%,transparent 67%);-webkit-mask-image:radial-gradient(circle at center,#000 0 34%,transparent 67%)}
+#appSplash .stars-a{animation:spStarsA var(--sp-dur) ease-out both}
+#appSplash .stars-b{transform:rotate(23deg) scale(1.08);animation:spStarsB var(--sp-dur) ease-out both}
+.sp-stage{position:relative;width:min(67vw,320px);aspect-ratio:1;display:grid;place-items:center;perspective:900px;transform-style:preserve-3d;animation:spStageIn var(--sp-dur) cubic-bezier(.16,.82,.2,1) both}
+.sp-aura{position:absolute;width:106%;height:106%;border-radius:50%;background:radial-gradient(circle,rgba(var(--sp-c1),.27) 0%,rgba(var(--sp-c2),.16) 28%,rgba(var(--sp-c3),.07) 47%,transparent 70%);filter:blur(19px);opacity:0;animation:spAura var(--sp-dur) ease-in-out both}
+.sp-orb-shell{position:relative;z-index:5;width:84%;aspect-ratio:1;display:grid;place-items:center;transform-style:preserve-3d;animation:spOrbFloat var(--sp-dur) cubic-bezier(.16,.82,.2,1) both}
+.sp-orb{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 0 11px rgba(var(--sp-c1),.52)) drop-shadow(0 0 28px rgba(var(--sp-c3),.30));transform:translateZ(32px);will-change:transform,filter;-webkit-user-drag:none;user-select:none}
+.sp-sheen{position:absolute;inset:11% 18% 45% 17%;z-index:6;border-radius:50%;background:linear-gradient(145deg,rgba(255,255,255,.38),rgba(255,255,255,.04) 43%,transparent 64%);filter:blur(7px);mix-blend-mode:screen;transform:rotate(-17deg);opacity:0;animation:spSheen var(--sp-dur) ease-out both;pointer-events:none}
+.sp-orbit{position:absolute;z-index:2;border:1px solid rgba(var(--sp-c1),.34);border-radius:50%;opacity:0;box-shadow:0 0 18px rgba(var(--sp-c2),.13);will-change:transform,opacity}
+#appSplash .orbit-a{width:106%;height:42%;transform:rotate(-12deg) rotateX(68deg);animation:spOrbitA var(--sp-dur) ease-out both}
+#appSplash .orbit-b{width:95%;height:95%;border-color:rgba(var(--sp-c3),.30);transform:rotateY(73deg) rotateZ(29deg);animation:spOrbitB var(--sp-dur) ease-out both}
+#appSplash .orbit-c{width:119%;height:35%;border-color:rgba(var(--sp-c1),.24);transform:rotate(19deg) rotateX(72deg);animation:spOrbitC var(--sp-dur) ease-out both}
+.sp-shadow{position:absolute;z-index:1;bottom:5%;width:70%;height:8%;border-radius:50%;background:radial-gradient(ellipse,rgba(var(--sp-c1),.30),rgba(var(--sp-c2),.13) 42%,transparent 72%);filter:blur(8px);opacity:0;animation:spShadow var(--sp-dur) ease-out both}
+.sp-copy{position:absolute;left:50%;top:calc(50% + min(36vw,185px));transform:translateX(-50%);z-index:7;width:min(78vw,360px);text-align:center}
+.sp-brand{font-size:clamp(30px,8vw,45px);font-weight:620;letter-spacing:.035em;line-height:1;color:var(--sp-text);text-shadow:0 0 12px rgba(var(--sp-c1),.34),0 0 30px rgba(var(--sp-c3),.16);opacity:0;transform:translateY(8px);animation:spCopyIn .55s .58s ease-out forwards}
+.sp-brand em{font-style:normal;color:var(--sp-text-accent)}
+.sp-sub{margin-top:13px;font-size:clamp(8px,2.25vw,11px);font-weight:600;letter-spacing:.33em;color:rgba(var(--sp-text-muted),.67);white-space:nowrap;opacity:0;transform:translateY(5px);animation:spCopyIn .48s .72s ease-out forwards}
+.sp-progress{position:relative;width:min(62vw,270px);height:2px;margin:19px auto 0;border-radius:999px;background:rgba(var(--sp-track),.20);overflow:hidden;opacity:0;animation:spProgressShow .2s .74s ease-out forwards;box-shadow:0 0 0 1px rgba(var(--sp-c1),.08)}
+.sp-progress span{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--sp-bar1),var(--sp-bar2) 52%,var(--sp-bar3));transform:translateX(-100%);box-shadow:0 0 12px rgba(var(--sp-c1),.82);animation:spProgress .8s .78s cubic-bezier(.16,.78,.2,1) forwards}
+/* Real completion: the bar only reaches 100% once initialisation has actually finished. */
+#appSplash.is-completing .sp-progress span{animation:spProgressDone var(--sp-complete) ease-out forwards}
+/* Status line (slow / error) */
+.sp-status{margin-top:14px;min-height:16px;font-size:12px;color:rgba(var(--sp-text-muted),.75);opacity:0;animation:spCopyIn .3s ease-out forwards}
+.sp-status[hidden]{display:none}
+.sp-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;pointer-events:auto}
+.sp-actions button{font:inherit;font-size:13px;font-weight:600;min-height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(var(--sp-c3),.5);background:rgba(var(--sp-c3),.12);color:var(--sp-text-accent);cursor:pointer}
+.sp-actions button.secondary{border-color:rgba(var(--sp-text-muted),.3);background:transparent;color:rgba(var(--sp-text-muted),.85)}
+@keyframes spStageIn{0%{opacity:0;transform:scale(.62) rotateX(18deg) rotateY(-24deg) translateY(14px)}22%{opacity:1}62%{transform:scale(1.03) rotateX(-2deg) rotateY(5deg) translateY(-3px)}100%{opacity:1;transform:scale(1) rotateX(0) rotateY(0) translateY(0)}}
+@keyframes spOrbFloat{0%{transform:scale(.76) rotateZ(-16deg) rotateY(-17deg)}55%{transform:scale(1.035) rotateZ(2deg) rotateY(5deg)}100%{transform:scale(1) rotateZ(0) rotateY(0)}}
+@keyframes spAura{0%{opacity:0;transform:scale(.72)}38%{opacity:.95}74%{opacity:.68;transform:scale(1.06)}100%{opacity:.54;transform:scale(1)}}
+@keyframes spSheen{0%,31%{opacity:0;transform:translateX(-25%) rotate(-17deg)}55%{opacity:.54}78%,100%{opacity:.05;transform:translateX(31%) rotate(-17deg)}}
+@keyframes spOrbitA{0%{opacity:0;transform:rotate(-32deg) rotateX(68deg) scale(.58)}30%{opacity:.72}100%{opacity:.24;transform:rotate(33deg) rotateX(68deg) scale(1)}}
+@keyframes spOrbitB{0%{opacity:0;transform:rotateY(73deg) rotateZ(-17deg) scale(.64)}37%{opacity:.58}100%{opacity:.19;transform:rotateY(73deg) rotateZ(42deg) scale(1)}}
+@keyframes spOrbitC{0%{opacity:0;transform:rotate(-21deg) rotateX(72deg) scale(.7)}45%{opacity:.48}100%{opacity:.16;transform:rotate(28deg) rotateX(72deg) scale(1)}}
+@keyframes spShadow{0%{opacity:0;transform:scaleX(.38)}55%{opacity:.72}100%{opacity:.46;transform:scaleX(1)}}
+@keyframes spStarsA{0%{opacity:0;transform:scale(.72) rotate(-4deg)}35%{opacity:.42}100%{opacity:.12;transform:scale(1.07) rotate(2deg)}}
+@keyframes spStarsB{0%{opacity:0;transform:rotate(23deg) scale(.8)}45%{opacity:.25}100%{opacity:.08;transform:rotate(28deg) scale(1.12)}}
+@keyframes spBgPulse{0%{opacity:.25;transform:scale(.72)}55%{opacity:1;transform:scale(1.05)}100%{opacity:.76;transform:scale(1)}}
+@keyframes spCopyIn{to{opacity:1;transform:translateY(0)}}
+@keyframes spProgressShow{to{opacity:1}}
+@keyframes spProgress{0%{transform:translateX(-100%)}100%{transform:translateX(-8%)}}
+@keyframes spProgressDone{from{transform:translateX(-8%)}to{transform:translateX(0)}}
+@media(max-width:760px){.sp-stage{width:min(76vw,300px)}.sp-copy{top:calc(50% + min(42vw,170px))}.sp-sub{letter-spacing:.25em}.sp-progress{margin-top:17px}}
+@media(prefers-reduced-motion:reduce){.sp-stage,.sp-orb-shell,.sp-aura,.sp-orbit,.sp-shadow,.sp-stars,.sp-bg,.sp-sheen,.sp-brand,.sp-sub,.sp-progress,.sp-progress span{animation-duration:.001ms!important;animation-delay:0s!important}#appSplash{transition-duration:.15s}}
+#appSplash .sp-actions[hidden]{display:none}
 </style>
 </head>
 
 <body data-sky="clear">
+<div id="appSplash" class="startup-splash" role="status" aria-live="polite" aria-label="Avvio di ATMOS" style="--sp-bg:#05070b;--sp-c1:255,170,50;--sp-c2:255,130,30;--sp-c3:255,215,70;--sp-star1:255,226,150;--sp-star2:255,150,90;--sp-text:#fff7ea;--sp-text-accent:#ffc83c;--sp-text-muted:255,236,205;--sp-track:200,160,100;--sp-bar1:#ff8a1f;--sp-bar2:#ffc83c;--sp-bar3:#fff0b0;--sp-dur:1650ms;--sp-complete:180ms;--sp-exit:300ms">
+  <div class="sp-bg"></div>
+  <div class="sp-stars stars-a"></div>
+  <div class="sp-stars stars-b"></div>
+  <div class="sp-stage">
+    <div class="sp-aura"></div>
+    <div class="sp-orbit orbit-a"></div>
+    <div class="sp-orbit orbit-b"></div>
+    <div class="sp-orbit orbit-c"></div>
+    <div class="sp-orb-shell"><img class="sp-orb" src="/icons/splash-orb.png" alt="" decoding="async" draggable="false"><div class="sp-sheen"></div></div>
+    <div class="sp-shadow"></div>
+  </div>
+  <div class="sp-copy">
+    <div class="sp-brand">ATMOS</div>
+    <div class="sp-sub">INITIALIZING ATMOSPHERE</div>
+    <div class="sp-progress"><span></span></div>
+    <div class="sp-status" hidden>Ancora qualche istante…</div>
+    <div class="sp-actions" hidden><button type="button" id="appSplashSkip">Continua</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var el=document.getElementById("appSplash");if(!el)return;
+  var T={minHoldMs:1650,reducedHoldMs:350,completeMs:180,exitMs:300,slowAfterMs:4000,escapeAfterMs:10000,hardCapMs:14000};
+  var reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var armed=false,held=false,ready=false,completing=false,leaving=false;
+  var status=el.querySelector(".sp-status"),actions=el.querySelector(".sp-actions");
+  function leave(){
+    if(leaving)return;leaving=true;
+    el.classList.add("is-completing","is-leaving");
+    setTimeout(function(){el.remove()},T.exitMs+40);
+  }
+  function step(){
+    if(completing||!held||!ready)return;
+    completing=true;el.classList.add("is-completing");
+    status.hidden=true;actions.hidden=true;
+    setTimeout(leave,T.completeMs);
+  }
+  function arm(){
+    if(armed)return;armed=true;el.classList.add("is-armed");
+    setTimeout(function(){held=true;step()},reduced?T.reducedHoldMs:T.minHoldMs);
+    setTimeout(function(){if(!completing)status.hidden=false},T.slowAfterMs);
+    setTimeout(function(){if(!completing)actions.hidden=false},T.escapeAfterMs);
+  }
+  var img=new Image();img.src="/icons/splash-orb.png";
+  setTimeout(arm,1200);
+  (img.decode?img.decode():Promise.resolve()).catch(function(){}).then(arm);
+  document.getElementById("appSplashSkip").addEventListener("click",leave);
+  setTimeout(leave,T.hardCapMs);
+  window.AtmosSplash={ready:function(){ready=true;step()}};
+})();
+</script>
+
 
 <div class="sky">
   <div class="sunGlow"></div>
@@ -1026,17 +1679,47 @@ function skyKind(code,isDay=true){
   return category(code);
 }
 function iconSVG(kind,cls="heroIcon"){
-  const cloud=`<g><ellipse cx="55" cy="65" rx="26" ry="16" fill="#edf4f9"/><circle cx="43" cy="59" r="15" fill="#fff"/><circle cx="60" cy="54" r="18" fill="#fff"/><circle cx="72" cy="63" r="13" fill="#e3edf4"/></g>`;
-  const sun=`<g stroke="#ffd948" stroke-width="5" stroke-linecap="round"><path d="M50 8v12M50 80v12M8 50h12M80 50h12M21 21l8 8M71 71l8 8M79 21l-8 8M29 71l-8 8"/></g><circle cx="50" cy="50" r="22" fill="#ffd43f"/>`;
-  if(kind==="clear")return `<svg class="${cls}" viewBox="0 0 100 100">${sun}</svg>`;
-  if(kind==="partly")return `<svg class="${cls}" viewBox="0 0 100 100"><g transform="translate(-10 -12) scale(.82)">${sun}</g>${cloud}</svg>`;
-  if(kind==="night")return `<svg class="${cls}" viewBox="0 0 100 100"><path d="M72 70A34 34 0 1 1 42 18a30 30 0 0 0 30 52Z" fill="#fff1b2"/></svg>`;
-  if(kind==="night-partly")return `<svg class="${cls}" viewBox="0 0 100 100"><path d="M59 54A25 25 0 1 1 37 18a22 22 0 0 0 22 36Z" fill="#fff1b2"/>${cloud}</svg>`;
-  if(kind==="cloud")return `<svg class="${cls}" viewBox="0 0 100 100">${cloud}</svg>`;
-  if(kind==="rain")return `<svg class="${cls}" viewBox="0 0 100 100">${cloud}<g stroke="#8ddcff" stroke-width="5" stroke-linecap="round"><path d="M36 82l-5 9M55 82l-5 9M74 82l-5 9"/></g></svg>`;
-  if(kind==="storm")return `<svg class="${cls}" viewBox="0 0 100 100">${cloud}<path d="M54 72h13L57 86h10L47 99l5-14H42Z" fill="#ffe16d"/></svg>`;
-  if(kind==="snow")return `<svg class="${cls}" viewBox="0 0 100 100">${cloud}<g fill="#e8f8ff"><circle cx="36" cy="86" r="4"/><circle cx="55" cy="89" r="4"/><circle cx="74" cy="85" r="4"/></g></svg>`;
-  return `<svg class="${cls}" viewBox="0 0 100 100">${cloud}<g stroke="rgba(255,255,255,.6)" stroke-width="4"><path d="M20 79h62M13 89h73"/></g></svg>`;
+  const defs=`<defs>
+    <linearGradient id="atmCloud" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0f5f7"/>
+      <stop offset=".52" stop-color="#c7d2d9"/>
+      <stop offset="1" stop-color="#7e919e"/>
+    </linearGradient>
+    <linearGradient id="atmDarkCloud" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c8d3da"/>
+      <stop offset=".55" stop-color="#82939f"/>
+      <stop offset="1" stop-color="#52636f"/>
+    </linearGradient>
+    <radialGradient id="atmSun">
+      <stop offset="0" stop-color="#fff7d4"/>
+      <stop offset=".7" stop-color="#f4d68b"/>
+      <stop offset="1" stop-color="#d3b467"/>
+    </radialGradient>
+  </defs>`;
+  const sun=`<g opacity=".95">
+    <circle cx="45" cy="42" r="18" fill="url(#atmSun)"/>
+    <g stroke="#f6e2ae" stroke-width="2.4" stroke-linecap="round" opacity=".82">
+      <path d="M45 12v9M45 63v9M15 42h9M66 42h9M24 21l7 7M59 56l7 7M66 21l-7 7M31 56l-7 7"/>
+    </g>
+  </g>`;
+  const cloud=`<g filter="drop-shadow(0 7px 8px rgba(0,0,0,.20))">
+    <ellipse cx="55" cy="64" rx="30" ry="16" fill="url(#atmCloud)"/>
+    <circle cx="40" cy="59" r="15" fill="url(#atmCloud)"/>
+    <circle cx="57" cy="52" r="20" fill="url(#atmCloud)"/>
+    <circle cx="73" cy="62" r="14" fill="url(#atmDarkCloud)"/>
+  </g>`;
+  const rain=`<g stroke="#c6e7f3" stroke-width="3.2" stroke-linecap="round" opacity=".88">
+    <path d="M35 80l-5 10M50 80l-5 10M65 80l-5 10"/>
+  </g>`;
+  if(kind==="clear")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}${sun}</svg>`;
+  if(kind==="partly")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}<g transform="translate(-7 -8) scale(.85)">${sun}</g>${cloud}</svg>`;
+  if(kind==="night")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}<path d="M69 69A33 33 0 1 1 43 17a28 28 0 0 0 26 52Z" fill="#e6edf1" opacity=".9"/></svg>`;
+  if(kind==="night-partly")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}<path d="M62 55A25 25 0 1 1 40 18a21 21 0 0 0 22 37Z" fill="#e5ecef" opacity=".8"/>${cloud}</svg>`;
+  if(kind==="cloud")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}${cloud}</svg>`;
+  if(kind==="rain")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}${cloud}${rain}</svg>`;
+  if(kind==="storm")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}${cloud}${rain}<path d="M56 70h12L57 84h9L47 98l5-16H42Z" fill="#f3dda0"/></svg>`;
+  if(kind==="snow")return `<svg class="${cls}" viewBox="0 0 100 100">${defs}${cloud}<g fill="#eaf5f9"><circle cx="36" cy="85" r="3.5"/><circle cx="54" cy="89" r="3.5"/><circle cx="72" cy="84" r="3.5"/></g></svg>`;
+  return `<svg class="${cls}" viewBox="0 0 100 100">${defs}${cloud}<g stroke="rgba(238,246,249,.55)" stroke-width="3"><path d="M18 80h64M12 89h75"/></g></svg>`;
 }
 
 /* FORECAST FETCH */
@@ -1088,7 +1771,8 @@ async function loadForecast(){
     else if(!forecast)toast("Meteo temporaneamente non disponibile");
     else toast("Aggiornamento non riuscito · dati precedenti")
   }finally{
-    mainLoading=false;$("refreshBtn").classList.remove("spin")
+    mainLoading=false;$("refreshBtn").classList.remove("spin");
+    window.AtmosSplash&&window.AtmosSplash.ready()
   }
 }
 function findCurrentHour(){
